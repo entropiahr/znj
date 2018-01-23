@@ -1,0 +1,38 @@
+{
+    "type": "block",
+    "body": [
+        {
+            "type": "def",
+            "name": "val_x",
+            "args": [],
+            "body": {
+                "type": "call",
+                "name": "add",
+                "args": [
+                    {"type": "integer", "value": 1},
+                    {"type": "integer", "value": 1}
+                ]
+            }
+        },
+        {
+            "type": "def",
+            "name": "lambda",
+            "args": ["number"],
+            "body": {
+                "type": "call",
+                "name": "add",
+                "args": [
+                    {"type": "call", "name": "val_x", "args": []},
+                    {"type": "call", "name": "number", "args": []}
+                ]
+            }
+        },
+        {
+            "type": "call",
+            "name": "lambda",
+            "args": [
+                {"type": "integer", "value": 20}
+            ]
+        }
+    ]
+}

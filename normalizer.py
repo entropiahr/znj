@@ -1,44 +1,13 @@
 #!/usr/bin/env python3
+"""
+This module translates pure ast to ast with normalized functions.
 
-root_ast = {
-    "type": "block",
-    "body": [
-        {
-            "type": "def",
-            "name": "val_x",
-            "args": [],
-            "body": {
-                "type": "call",
-                "name": "add",
-                "args": [
-                    {"type": "integer", "value": 1},
-                    {"type": "integer", "value": 1}
-                ]
-            }
-        },
-        {
-            "type": "def",
-            "name": "lambda",
-            "args": ["number"],
-            "body": {
-                "type": "call",
-                "name": "add",
-                "args": [
-                    {"type": "call", "name": "val_x", "args": []},
-                    {"type": "call", "name": "number", "args": []}
-                ]
-            }
-        },
-        {
-            "type": "call",
-            "name": "lambda",
-            "args": [
-                {"type": "integer", "value": 20}
-            ]
-        }
-    ]
-}
+Normalized functions are functions that explicitly take environment arguments
+through "env".
 
+Also, this module transforms "def" that has no "args" to "def_name", and "def"
+with "args" to "fn_def".
+"""
 
 class ScopeName:
     def __init__(self, type, name):
@@ -170,7 +139,7 @@ def normalize_expression(ast, scope):
     else:
         raise ValueError("Wrong type: " + str(ast["type"]))
 
-def normalize_root_ast(ast):
+def normalize_ast(ast):
     scope = Scope().add_fns("add")
     ast, _, used = normalize_expression(ast, scope)
 
@@ -180,6 +149,11 @@ def normalize_root_ast(ast):
     return ast
 
 
-import json
+if __name__ == "__main__":
+    import json
+    import sys
 
-print(json.dumps(normalize_root_ast(root_ast), indent=4))
+    ast = json.load(sys.stdin)
+    normalized_ast = normalize_ast(ast)
+    json.dump(normalized_ast, sys.stdout, indent=4)
+    sys.stdout.write("\n")
