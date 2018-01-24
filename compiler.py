@@ -2,53 +2,10 @@
 
 from llvmlite import ir
 
-root_ast = {
-    "type": "block",
-    "body": [
-        {
-            "type": "def",
-            "name": "val_x",
-            "args": [],
-            "body": {
-                "type": "call",
-                "name": "add",
-                "args": [
-                    {"type": "integer", "value": 1},
-                    {"type": "integer", "value": 1}
-                ]
-            }
-        },
-        {
-            "type": "def",
-            "name": "lambda",
-            "args": ["number"],
-            "body": {
-                "type": "call",
-                "name": "add",
-                "args": [
-                    {"type": "call", "name": "val_x", "args": []},
-                    {"type": "call", "name": "number", "args": []}
-                ]
-            }
-        },
-        {
-            "type": "call",
-            "name": "lambda",
-            "args": [
-                {"type": "integer", "value": 20}
-            ]
-        }
-    ]
-}
-
 int_type = ir.IntType(32)
 
 module = ir.Module()
 module.triple = "x86_64-unknown-linux-gnu"
-
-# TODO: maybe have two cycles
-# first cycle: flatten (no context args to functions)
-# second cycle: actual codegen
 
 class Expression:
     def __init__(self, context, used_context, call):
@@ -169,20 +126,26 @@ def create_expression(ast, context):
     else:
         raise ValueError("Wrong type: " + str(ast["type"]))
 
+def unused1():
+    root_context = Context.root({
+        "add": lambda builder, args: builder.add(args[0], args[1])
+    })
 
-root_context = Context.root({
-    "add": lambda builder, args: builder.add(args[0], args[1])
-})
+    main = ir.Function(module, ir.FunctionType(int_type, ()), name="main")
+    block = main.append_basic_block("entry")
+    builder = ir.IRBuilder(block)
 
-main = ir.Function(module, ir.FunctionType(int_type, ()), name="main")
-block = main.append_basic_block("entry")
-builder = ir.IRBuilder(block)
+    root_expression = create_expression(root_ast, root_context)
+    result = root_expression.call(builder, [])
+    builder.ret(result)
 
-root_expression = create_expression(root_ast, root_context)
-result = root_expression.call(builder, [])
-builder.ret(result)
+def unused2():
+    print("\n\n=======================================\n\n")
+    print(module)
+    with open("test.ll", "w") as output:
+        output.write(str(module))
 
-def unused():
+def unused3():
     my_add = ir.Function(module, ir.FunctionType(int_type, (int_type, int_type)), name="my_add")
 
     block = func.append_basic_block(name="entry")
@@ -202,7 +165,30 @@ def unused():
     result = builder.call(func, (ir.Constant(int_type, 23), ir.Constant(int_type, 23), ir.Constant(int_type, 2)))
     builder.ret(result)
 
-print("\n\n=======================================\n\n")
-print(module)
-with open("test.ll", "w") as output:
-    output.write(str(module))
+
+def generate_fn(fn):
+    arg_types = tuple(int_type for x in fn["args"])
+    function = ir.Function(module, ir.FunctionType(int_type, arg_types), name=fn["name"])
+    function.args = tuple(ir.Argument(function, t, n) for n, t in zip(fn["args"], arg_types))
+
+    block = function.append_basic_block("entry")
+    builder = ir.IRBuilder(block)
+
+    builder.ret(ir.Constant(int_type, 0))
+
+def generate_ast(ast):
+    for fn in ast["fns"]:
+        generate_fn(fn)
+
+    generate_fn({"name": "main", "args": [], "env": []})
+
+    return str(module)
+
+
+if __name__ == "__main__":
+    import json
+    import sys
+
+    ast = json.load(sys.stdin)
+    llvm_ir = generate_ast(ast)
+    sys.stdout.write(llvm_ir)
