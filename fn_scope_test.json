@@ -1,0 +1,42 @@
+{
+    "type": "block",
+    "body": [
+        {
+            "type": "def",
+            "name": "outer_fn",
+            "args": ["outer_1"],
+            "body": {
+		"type": "def",
+		"name": "inner_fn",
+		"args": ["inner_1"],
+		"body": {
+		    "type": "call",
+		    "name": "add",
+		    "args": [
+			{"type": "call", "name": "outer_1", "args": []},
+			{"type": "call", "name": "inner_1", "args": []}
+		    ]
+		}
+            }
+        },
+        {
+            "type": "def",
+            "name": "inner_instance",
+            "args": [],
+            "body": {
+                "type": "call",
+                "name": "outer_fn",
+                "args": [
+                    {"type": "integer", "value": 10}
+                ]
+            }
+        },
+        {
+            "type": "call",
+            "name": "inner_instance",
+            "args": [
+                {"type": "integer", "value": 1}
+            ]
+        }
+    ]
+}

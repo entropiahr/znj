@@ -6,22 +6,18 @@ Normalized functions are functions that explicitly take environment arguments
 through "env".
 
 Also, this module transforms "def" that has no "args" to "def_name", and "def"
-with "args" to "fn_def".
+with "args" to "def_fn".
 """
 
 class ScopeName:
-    def __init__(self, type, name):
+    def __init__(self, type, name, env=None):
         self.type = type
         self.name = name
-        self.env = []
+        self.env = env
 
-    def copy(self):
-        new = self.__class__(self.type, self.name)
-        new.env = self.env.copy()
-        return new
-
-    def add_env(self, env):
-        self.env = [{"type": "call", "name": env_arg, "args": []} for env_arg in env]
+    def get_env(self):
+        if self.env is None: return None
+        return [{"type": "call", "name": e, "args": []} for e in self.env]
 
 
 class Scope:
@@ -34,24 +30,20 @@ class Scope:
 
     def copy(self):
         new = self.__class__()
-        new.snames = [sname.copy() for sname in self.snames]
+        new.snames = self.snames.copy()
         return new
 
-    def add_fns(self, *snames):
+    def add(self, ast):
         new = self.copy()
-        new.snames.extend([ScopeName("fn", sname) for sname in snames])
-        return new
 
-    def add_fn_env(self, name, env):
-        new = self.copy()
-        for sname in new.snames:
-            if sname.name == name:
-                sname.add_env(env)
-        return new
+        if ast["type"] == "def_name":
+            sname = ScopeName("name", ast["name"])
+        elif ast["type"] == "def_fn":
+            sname = ScopeName("fn", ast["name"], ast.get("env"))
+        else:
+            raise ValueError("Wrong type in scope: " + str(ast["type"]))
 
-    def add_names(self, *snames):
-        new = self.copy()
-        new.snames.extend([ScopeName("name", sname) for sname in snames])
+        new.snames.append(sname)
         return new
 
     def find(self, name):
@@ -61,13 +53,14 @@ class Scope:
 
 
 def normalize_def_fn(ast, scope):
-    scope = scope.add_fns(ast["name"])
-
-    child_scope = Scope(scope).add_names(*ast["args"])
+    child_scope = Scope(scope)
+    for arg in ast["args"]:
+        child_scope = child_scope.add({"type": "def_name", "name": arg})
     body_ast, _, used = normalize_expression(ast["body"], child_scope)
 
-    scope = scope.add_fn_env(ast["name"], used)
+    ast["type"] = "def_fn"
     ast["env"] = used
+    scope = scope.add(ast)
 
     return (ast, scope, [])
 
@@ -79,7 +72,7 @@ def normalize_def_name(ast, scope):
         "name": ast["name"],
         "body": body
     }
-    scope = scope.add_names(ast["name"])
+    scope = scope.add(ast)
     return (ast, scope, used)
 
 def normalize_def(ast, scope):
@@ -93,7 +86,7 @@ def normalize_call(ast, scope):
     scope_name = scope.find(ast["name"])
     if scope_name:
         used = []
-        env = scope_name.env
+        env = scope_name.get_env()
     else:
         used = [ast["name"]]
         env = None
@@ -140,7 +133,7 @@ def normalize_expression(ast, scope):
         raise ValueError("Wrong type: " + str(ast["type"]))
 
 def normalize_ast(ast):
-    scope = Scope().add_fns("add")
+    scope = Scope().add({"type": "def_fn", "name": "add"})
     ast, _, used = normalize_expression(ast, scope)
 
     if used:
