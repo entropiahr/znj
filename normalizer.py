@@ -12,11 +12,6 @@ with "args" to "def_fn_simple" or "def_fn_env".
 be called with its "env".
 """
 
-class ScopeName:
-    def __init__(self, type, name):
-        self.type = type
-        self.name = name
-
 
 class Scope:
     def __init__(self, parent=None):
@@ -152,7 +147,12 @@ def normalize_ast(ast):
 
     return {
         "fns": fns,
-        "main": ast
+        "main": {
+            "name": "main",
+            "args": [],
+            "env": [],
+            "body": ast
+        }
     }
 
 

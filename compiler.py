@@ -7,180 +7,171 @@ int_type = ir.IntType(32)
 module = ir.Module()
 module.triple = "x86_64-unknown-linux-gnu"
 
-class Expression:
-    def __init__(self, context, used_context, call):
-        self.context = context
-        self.used_context = used_context
-        self.call = call
+
+class Scope:
+    def __init__(self, parent):
+        if parent:
+            self.values = parent.values.copy()
 
     @classmethod
-    def integer(cls, context, value):
-        return cls(context, dict(), lambda builder, args: ir.Constant(int_type, value))
+    def root(cls, internal_calls):
+        scope = cls(None)
+        scope.values = internal_calls
+        return scope
 
-
-class Context:
-    def __init__(self, parent, expressions):
-        self.expressions = expressions
-        self.parent = parent
-
-    @classmethod
-    def root(cls, expressions):
-        return cls(None, expressions)
-
-    def copy(self):
-        parent = self.parent.copy() if self.parent is not None else None
-        expressions = self.expressions.copy()
-        return self.__class__(parent, expressions)
-
-    def add(self, name, call):
-        new = self.copy()
-        new.expressions.update({name: call})
+    def add_value(self, name, value):
+        new = self.__class__(self)
+        new.values = self.values.copy()
+        new.values[name] = lambda builder, args: value
         return new
 
-    def find(self, name):
-        expression = self.expressions.get(name)
-        if expression is not None: return expression
-        if self.parent is None: return None
-        return self.parent.find(name)
+    def add_fn(self, name, fn):
+        new = self.__class__(self)
+        new.values = self.values.copy()
+        new.values[name] = lambda builder, args: builder.call(fn, args)
+        return new
 
-def create_def(ast, context):
-    args = ast["args"]
-    name = ast["name"]
-    body = ast["body"]
-    if args or name == "main":
-        context_args = [(name, call) for name, call in context.expressions.items() if name == "val_x"]
-        context_arg_names = [name for name, _ in context_args]
-        arg_names = context_arg_names + ast["args"]
-
-        base_arg_types = [int_type for _ in arg_names]
-        base_args = tuple(Argument())
-        function_type = ir.FunctionType(int_type, arg_types)
-
-        function = ir.Function(module, type, ast["name"])
-
-        arg_calls = map(lambda arg: lambda _builder, _args: arg, function.args)
-        args = dict(zip(arg_names, arg_calls))
-
-        child_context = Context(context, args)
-        child_expression = create_expression(body, child_context)
-        used_context = child_expression.used_context
-
-        block = function.append_basic_block("entry")
-        child_builder = ir.IRBuilder(block)
-        child_builder.ret(child_expression.call(child_builder, []))
+    def add_fn_env(self, name, fn_struct):
+        new = self.__class__(self)
+        new.values = self.values.copy()
 
         def call(builder, args):
-            context_arg_values = [call(builder, []) for _, call in context_args]
-            return builder.call(function, context_arg_values + args)
-    else:
-        child_expression = create_expression(body, context)
-        used_context = child_expression.used_context
-        call = child_expression.call
+            fn = builder.extract_value(fn_struct, 0, name)
+            env = builder.extract_value(fn_struct, 1, name)
+            builder.call(fn, [env] + args)
 
-    if used_context: print(used_context)
-    context = context.add(name, call)
-    return Expression(context, used_context, call)
+        new.values[name] = lambda builder, args: builder.call(fn, [env] + args)
+        return new
 
-def create_block(ast, context):
-    body = ast["body"]
-    if not body: raise ValueError("body mustn't be empty!")
+    def call(self, name):
+        return self.values[name]
 
-    child_context = context
-    for child in body:
-        child_expression = create_expression(child, child_context)
-        child_context = child_expression.context
-        last_expression = child_expression
 
-    last_expression.context = context
-    return last_expression
+def build_struct(builder, values, name=""):
+    struct_type = ir.LiteralStructType([v.type for v in values])
+    struct = ir.Constant(struct_type, ir.Undefined)
+    for i, e in enumerate(values):
+        is_last = i == len(values) -1
+        if name and not is_last:
+            step_name = name + "." + str(i)
+        else:
+            step_name = name
+        struct = builder.insert_value(struct, e, i, step_name)
+    return struct
 
-def create_integer(ast, context):
-    return Expression.integer(context, ast["value"])
+def generate_def_fn_env(ast, builder, scope):
+    name = ast["name"]
+    fn = find_fn(name)
 
-def create_call(ast, context):
-    this_call = context.find(ast["name"])
-    arg_expressions = [create_expression(arg, context) for arg in ast["args"]]
+    env_values = [generate_expression(e, builder, scope)[0] for e in ast["env"]]
+    env_struct = build_struct(builder, env_values, ast["name"] + ".env")
 
-    used_context = {ast["name"]: this_call}
-    for arg_expression in arg_expressions:
-        used_context.update(arg_expression.used_context)
+    fn_struct = build_struct(builder, (fn, env_struct), ast["name"] + ".fn")
 
-    arg_calls = [arg_expression.call for arg_expression in arg_expressions]
-    def call(builder, args):
-        args = [arg_call(builder, []) for arg_call in arg_calls]
-        return this_call(builder, args)
+    scope = scope.add_fn_env(name, fn_struct)
 
-    return Expression(context, used_context, call)
+    return (fn_struct, scope)
 
-def create_expression(ast, context):
-    t = ast["type"]
+def generate_def_fn_simple(ast, builder, scope):
+    name = ast["name"]
+    fn = find_fn(name)
+    scope = scope.add_fn(name, fn)
+    return (fn, scope)
 
-    if t == "def":
-        return create_def(ast, context)
-    elif t == "integer":
-        return create_integer(ast, context)
-    elif t == "call":
-        return create_call(ast, context)
-    elif t == "block":
-        return create_block(ast, context)
+def generate_def_name(ast, builder, scope):
+    name = ast["name"]
+    value, _ = generate_expression(ast["body"], builder, scope)
+    scope = scope.add_value(name, value)
+    return (value, scope)
+
+def generate_integer(ast, builder, scope):
+    return (ir.Constant(int_type, ast["value"]), scope)
+
+def generate_call(ast, builder, scope):
+    args = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
+    call = scope.call(ast["name"])
+
+    return (call(builder, args), scope)
+
+def generate_block(ast, builder, scope):
+    child_scope = Scope(scope)
+    for e in ast["body"]:
+        value, child_scope = generate_expression(e, builder, child_scope)
+    return (value, scope)
+
+def generate_expression(ast, builder, scope):
+    if ast["type"] == "def_fn_env":
+        return generate_def_fn_env(ast, builder, scope)
+    elif ast["type"] == "def_fn_simple":
+        return generate_def_fn_simple(ast, builder, scope)
+    elif ast["type"] == "def_name":
+        return generate_def_name(ast, builder, scope)
+    elif ast["type"] == "integer":
+        return generate_integer(ast, builder, scope)
+    elif ast["type"] == "call":
+        return generate_call(ast, builder, scope)
+    elif ast["type"] == "block":
+        return generate_block(ast, builder, scope)
     else:
         raise ValueError("Wrong type: " + str(ast["type"]))
 
-def unused1():
-    root_context = Context.root({
-        "add": lambda builder, args: builder.add(args[0], args[1])
-    })
+def generate_fn(ast, root_scope):
+    fn = find_fn(ast["name"])
 
-    main = ir.Function(module, ir.FunctionType(int_type, ()), name="main")
-    block = main.append_basic_block("entry")
+    block = fn.append_basic_block("entry")
     builder = ir.IRBuilder(block)
 
-    root_expression = create_expression(root_ast, root_context)
-    result = root_expression.call(builder, [])
-    builder.ret(result)
+    scope = Scope(root_scope)
+    env_names = ast["env"]
+    if ast["env"]:
+        env_struct, *args = fn.args
+        env_values = [builder.extract_value(env_struct, i, name) for i, name in enumerate(env_names)]
+        scope_values = [(x.name, x) for x in env_values + args]
+    else:
+        scope_values = [(arg.name, arg) for arg in fn.args]
 
-def unused2():
-    print("\n\n=======================================\n\n")
-    print(module)
-    with open("test.ll", "w") as output:
-        output.write(str(module))
+    for name, value in scope_values:
+        scope = scope.add_value(name, value)
 
-def unused3():
-    my_add = ir.Function(module, ir.FunctionType(int_type, (int_type, int_type)), name="my_add")
+    value, _ = generate_expression(ast["body"], builder, scope)
 
-    block = func.append_basic_block(name="entry")
-    builder = ir.IRBuilder(block)
-    a, b, c = func.args
-    result = builder.add(a, b, name="res")
-    result = builder.add(result, c, name="res")
-    builder.ret(result)
+    builder.ret(value)
 
-    main = ir.Function(module, ir.FunctionType(int_type, ()), name="main")
-    block = main.append_basic_block()
-    builder.position_at_start(block)
-    first = builder.alloca(int_type, name="first")
-    builder.store(ir.Constant(int_type, 11), first)
-    func_ptr = builder.alloca(my_add.type.as_pointer(), name="func_ptr")
-    builder.store(my_add, func_ptr)
-    result = builder.call(func, (ir.Constant(int_type, 23), ir.Constant(int_type, 23), ir.Constant(int_type, 2)))
-    builder.ret(result)
+def declare_fn(ast):
+    name = ast["name"]
 
+    env_names = ast["env"]
+    if env_names:
+        env_type = ir.LiteralStructType([int_type for x in env_names])
+    else:
+        env_type = None
 
-def generate_fn(fn):
-    arg_types = tuple(int_type for x in fn["args"])
-    function = ir.Function(module, ir.FunctionType(int_type, arg_types), name=fn["name"])
-    function.args = tuple(ir.Argument(function, t, n) for n, t in zip(fn["args"], arg_types))
+    arg_names = ast["args"]
+    arg_types = tuple(int_type for x in arg_names)
+    if env_names:
+        arg_names = [".env"] + arg_names
+        arg_types = (env_type,) + arg_types
 
-    block = function.append_basic_block("entry")
-    builder = ir.IRBuilder(block)
+    fn = ir.Function(module, ir.FunctionType(int_type, arg_types), name=name)
+    fn.args = tuple(ir.Argument(fn, t, n) for t, n in zip(arg_types, arg_names))
 
-    builder.ret(ir.Constant(int_type, 0))
+def find_fn(name):
+    fn, *tail = [x for x in module.functions if x.name == name]
+    return fn
 
 def generate_ast(ast):
-    for fn in ast["fns"]:
-        generate_fn(fn)
+    fns = ast["fns"]
+    for fn in fns:
+        declare_fn(fn)
 
-    generate_fn({"name": "main", "args": [], "env": []})
+    scope = Scope.root({
+        "add": lambda builder, args: builder.add(args[0], args[1])
+    })
+    for fn in fns:
+        generate_fn(fn, scope)
+
+    declare_fn(ast["main"])
+    generate_fn(ast["main"], scope)
 
     return str(module)
 
