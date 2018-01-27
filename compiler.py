@@ -7,6 +7,18 @@ int_type = ir.IntType(32)
 module = ir.Module()
 module.triple = "x86_64-unknown-linux-gnu"
 
+def type_to_ir(type):
+    if type[0] == "Int":
+        return ir.IntType(32)
+    if type[0] == "a":
+        return ir.IntType(32)
+    elif type[0] == "->":
+        arg_types = []
+        while type[0] == "->":
+            arg_types.append(type_to_ir(type[1]))
+            type = type[2]
+        ret_type = type_to_ir(type)
+        return ir.FunctionType(ret_type, arg_types)
 
 class Scope:
     def __init__(self, parent):
@@ -25,12 +37,6 @@ class Scope:
         new.values[name] = lambda builder, args: value
         return new
 
-    def add_fn(self, name, fn):
-        new = self.__class__(self)
-        new.values = self.values.copy()
-        new.values[name] = lambda builder, args: builder.call(fn, args)
-        return new
-
     def add_fn_env(self, name, fn_struct):
         new = self.__class__(self)
         new.values = self.values.copy()
@@ -40,11 +46,13 @@ class Scope:
             env = builder.extract_value(fn_struct, 1, name)
             builder.call(fn, [env] + args)
 
-        new.values[name] = lambda builder, args: builder.call(fn, [env] + args)
+        new.values[name] = call
         return new
 
     def call(self, name):
-        return self.values[name]
+        call = self.values.get(name)
+        if call: return call
+        return lambda builder, args: builder.call(find_fn(name), args)
 
 
 def build_struct(builder, values, name=""):
@@ -75,7 +83,6 @@ def generate_def_fn_env(ast, builder, scope):
 def generate_def_fn_simple(ast, builder, scope):
     name = ast["name"]
     fn = find_fn(name)
-    scope = scope.add_fn(name, fn)
     return (fn, scope)
 
 def generate_def_name(ast, builder, scope):
@@ -85,7 +92,7 @@ def generate_def_name(ast, builder, scope):
     return (value, scope)
 
 def generate_integer(ast, builder, scope):
-    return (ir.Constant(int_type, ast["value"]), scope)
+    return (ir.Constant(type_to_ir(ast["vtype"]), ast["value"]), scope)
 
 def generate_call(ast, builder, scope):
     args = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
@@ -122,13 +129,13 @@ def generate_fn(ast, root_scope):
     builder = ir.IRBuilder(block)
 
     scope = Scope(root_scope)
-    env_names = ast["env"]
-    if ast["env"]:
-        env_struct, *args = fn.args
-        env_values = [builder.extract_value(env_struct, i, name) for i, name in enumerate(env_names)]
-        scope_values = [(x.name, x) for x in env_values + args]
+    env = ast.get("env")
+    if env:
+        env_struct, *arg_values = fn.args
+        env_values = [builder.extract_value(env_struct, i, e["name"]) for i, e in enumerate(env)]
+        scope_values = [(x.name, x) for x in env_values + arg_values]
     else:
-        scope_values = [(arg.name, arg) for arg in fn.args]
+        scope_values = [(x.name, x) for x in fn.args]
 
     for name, value in scope_values:
         scope = scope.add_value(name, value)
@@ -137,22 +144,26 @@ def generate_fn(ast, root_scope):
 
     builder.ret(value)
 
-def declare_fn(ast):
+def declare_fn(ast, *, is_main=False):
     name = ast["name"]
+    args = ast["args"]
 
-    env_names = ast["env"]
-    if env_names:
-        env_type = ir.LiteralStructType([int_type for x in env_names])
-    else:
-        env_type = None
+    type = ast["vtype"]
+    for arg in args:
+        assert type[0] == "->"
+        type = type[2]
+    ret_type = type_to_ir(type)
 
-    arg_names = ast["args"]
-    arg_types = tuple(int_type for x in arg_names)
-    if env_names:
+    arg_names = [arg["name"] for arg in args]
+    arg_types = [type_to_ir(arg["vtype"]) for arg in args]
+
+    env = ast.get("env")
+    if env:
+        env_type = ir.LiteralStructType([type_to_ir(e["vtype"]) for e in env])
         arg_names = [".env"] + arg_names
-        arg_types = (env_type,) + arg_types
+        arg_types = [env_type] + arg_types
 
-    fn = ir.Function(module, ir.FunctionType(int_type, arg_types), name=name)
+    fn = ir.Function(module, ir.FunctionType(ret_type, arg_types), name=name)
     fn.args = tuple(ir.Argument(fn, t, n) for t, n in zip(arg_types, arg_names))
 
 def find_fn(name):
@@ -170,8 +181,14 @@ def generate_ast(ast):
     for fn in fns:
         generate_fn(fn, scope)
 
-    declare_fn(ast["main"])
-    generate_fn(ast["main"], scope)
+    main_ast = {
+        "name": "main",
+        "args": [],
+        "vtype": ["Int"],
+        "body": ast["main"]
+    }
+    declare_fn(main_ast, is_main=True)
+    generate_fn(main_ast, scope)
 
     return str(module)
 

@@ -15,15 +15,19 @@ be called with its "env".
 
 class Scope:
     def __init__(self, parent=None):
-        if parent is None:
-            self.asts = []
-            return
+        self.parent = parent
+        self.asts = []
+        self.borrowed = []
 
-        self.asts = [ast for ast in parent.copy().asts if ast["type"] == "def_fn_simple"]
+        #if parent is None:
+        #    self.asts = []
+        #    return
+        #self.asts = [ast for ast in parent.copy().asts if ast["type"] == "def_fn_simple"]
 
     def copy(self):
-        new = self.__class__()
+        new = self.__class__(self.parent)
         new.asts = self.asts.copy()
+        new.borrowed = self.borrowed.copy()
         return new
 
     def add(self, ast):
@@ -33,126 +37,178 @@ class Scope:
 
     def find(self, name):
         res = [ast for ast in self.asts if ast["name"] == name]
-        if res: return res[-1]
-        return None
+        if res: return (res[-1], self)
+
+        if self.parent is None:
+            raise ValueError("Can't find name: " + name)
+
+        ast, new_parent = self.parent.find(name)
+
+        if ast["type"] == "def_fn_simple":
+            return (ast, self)
+
+        new = self.copy()
+        new.parent = new_parent
+        new.borrowed.append(ast)
+
+        return (ast, new)
 
 
-def normalize_def_fn(ast, scope):
-    args = ast["args"]
+def type_infer(a, b):
+    if a == type_empty(): return b
+    if b == type_empty(): return a
 
-    child_scope = Scope(scope)
+    a_name, *a_args = a
+    b_name, *b_args = b
+
+    if a_name != b_name: return None
+    if len(a_args) != len(b_args): return None
+
+    return [a_name] + [type_infer(a, b) for a, b in zip(a_args, b_args)]
+
+def type_validate(a, b):
+    result = type_infer(a, b)
+    if result is None:
+        raise ValueError("Types don't match: " + str(a) + " " + str(b))
+
+    return result
+
+def type_empty():
+    return ["a"]
+
+def type_fn(arg_types, ret_type):
+    type = ret_type
+    for arg_type in arg_types:
+        type = ["->", arg_type, type]
+    return type
+
+def normalize_def(ast, scope, requested_type):
+    arg_names = ast["args"]
+    args = [{"type": "def_name", "name": name, "vtype": type_empty()} for name in arg_names] 
+
+    body_scope = Scope(scope)
     for arg in args:
-        child_scope = child_scope.add({"type": "def_name", "name": arg})
-    body, _, env, body_fns = normalize_expression(ast["body"], child_scope)
+        body_scope = body_scope.add(arg)
 
-    if env:
-        ast = {
-            "type": "def_fn_env",
-            "name": ast["name"],
-            "env": [{"type": "call", "name": e, "args": []} for e in env]
-        }
-    else:
+    body, body_scope, body_fns = normalize_expression(ast["body"], body_scope, type_empty())
+    scope = body_scope.parent
+
+    type = type_fn([arg["vtype"] for arg in args], body["vtype"])
+    type = type_validate(type, requested_type)
+
+    is_function = type[0] == "->"
+
+    fns = body_fns
+
+    if is_function:
         ast = {
             "type": "def_fn_simple",
-            "name": ast["name"]
+            "name": ast["name"],
+            "vtype": type
+        }
+        fn = {
+            "name": ast["name"],
+            "args": args,
+            "vtype": type,
+            "body": body
+        }
+
+        env = body_scope.borrowed
+        if env:
+            env_call = [{"type": "call", "name": e["name"], "args": []} for e in env]
+            ast["type"] = "def_fn_env"
+            ast["env"] = env_call
+
+            env_def = [{"type": "def_name", "name": e["name"], "vtype": e["vtype"]} for e in env]
+            fn["env"] = env_def
+
+        fns = fns + [fn]
+    else:
+        ast = {
+            "type": "def_name",
+            "name": ast["name"],
+            "vtype": type,
+            "body": body
         }
 
     scope = scope.add(ast)
 
-    used = [e for e in env if scope.find(e) == None]
+    return (ast, scope, fns)
 
-    fn = {
-        "name": ast["name"],
-        "args": args,
-        "env": env,
-        "body": body
-    }
-    fns = body_fns + [fn]
+def normalize_integer(ast, scope, type):
+    ast["vtype"] = type_validate(["Int"], type)
+    return (ast, scope, [])
 
-    return (ast, scope, used, fns)
+def normalize_call(ast, scope, requested_type):
+    scope_ast, scope = scope.find(ast["name"])
 
-def normalize_def_name(ast, scope):
-    body, _, used, body_fns = normalize_expression(ast["body"], scope)
-
-    ast = {
-        "type": "def_name",
-        "name": ast["name"],
-        "body": body
-    }
-    scope = scope.add(ast)
-    return (ast, scope, used, body_fns)
-
-def normalize_def(ast, scope):
-    if ast["args"]: return normalize_def_fn(ast, scope)
-    else: return normalize_def_name(ast, scope)
-
-def normalize_integer(ast, scope):
-    return (ast, scope, [], [])
-
-def normalize_call(ast, scope):
-    scope_ast = scope.find(ast["name"])
-    if scope_ast:
-        used = []
-        env = scope_ast.get("env")
-    else:
-        used = [ast["name"]]
-        env = None
+    type = scope_ast["vtype"]
+    arg_types = []
+    for _ in ast["args"]:
+        if type[0] != "->":
+            raise ValueError("Passed more arguments then needed in: " + ast["name"])
+        arg_types.append(type[1])
+        type = type[2]
+    type = type_validate(type, requested_type)
 
     args = []
     fns = []
-    for arg in ast["args"]:
-        arg, _, arg_used, arg_fns = normalize_expression(arg, scope)
+    for arg, arg_type in zip(ast["args"], arg_types):
+        arg_scope = Scope(scope)
+        arg, arg_scope, arg_fns = normalize_expression(arg, arg_scope, arg_type)
+        scope = arg_scope.parent
         args.append(arg)
-        used.extend(arg_used)
         fns.extend(arg_fns)
-    ast["args"] = args
 
-    if env:
+    ast["args"] = args
+    ast["vtype"] = type
+
+    if scope_ast.get("env"):
         ast["env"] = ast["name"] + ".env"
 
-    return (ast, scope, used, fns)
+    return (ast, scope, fns)
 
-def normalize_block(ast, scope):
+def normalize_block(ast, scope, type):
     body = []
-    used = []
     fns = []
     child_scope = scope
-    for child in ast["body"]:
-        child, child_scope, child_used, child_fns = normalize_expression(child, child_scope)
+    for i, child in enumerate(ast["body"]):
+        is_last = i == len(ast["body"]) -1
+        child_type = type if is_last else ["a"]
+        child, child_scope, child_fns = normalize_expression(
+            child, child_scope, child_type
+        )
         body.append(child)
-        used.extend(child_used)
         fns.extend(child_fns)
 
+    ast["vtype"] = body[-1]["vtype"]
     ast["body"] = body
-    return (ast, scope, used, fns)
+    return (ast, scope, fns)
 
-def normalize_expression(ast, scope):
+def normalize_expression(ast, scope, type):
     if ast["type"] == "def":
-        return normalize_def(ast, scope)
+        return normalize_def(ast, scope, type)
     elif ast["type"] == "integer":
-        return normalize_integer(ast, scope)
+        return normalize_integer(ast, scope, type)
     elif ast["type"] == "call":
-        return normalize_call(ast, scope)
+        return normalize_call(ast, scope, type)
     elif ast["type"] == "block":
-        return normalize_block(ast, scope)
+        return normalize_block(ast, scope, type)
     else:
-        raise ValueError("Wrong type: " + str(ast["type"]))
+        raise ValueError("Wrong ast type: " + str(ast["type"]))
 
 def normalize_ast(ast):
-    scope = Scope().add({"type": "def_fn_simple", "name": "add"})
-    ast, _, used, fns = normalize_expression(ast, scope)
-
-    if used:
-        raise ValueError("Can't find names: " + ", ".join(used))
+    add = {
+        "type": "def_fn_simple",
+        "name": "add",
+        "vtype": ["->", ["Int"], ["->", ["Int"], ["Int"]]]
+    }
+    scope = Scope().add(add)
+    ast, _, fns = normalize_expression(ast, scope, ["Int"])
 
     return {
         "fns": fns,
-        "main": {
-            "name": "main",
-            "args": [],
-            "env": [],
-            "body": ast
-        }
+        "main": ast
     }
 
 
