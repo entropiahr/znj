@@ -1,0 +1,31 @@
+{
+    "type": "block",
+    "body": [
+        {
+            "type": "def",
+            "name": "one",
+            "args": [],
+            "body": {"type": "integer", "value": 1}
+        },
+        {
+            "type": "def",
+            "name": "inc",
+            "args": ["a"],
+            "body": {
+		"type": "instruction",
+		"name": "add",
+		"args": [
+		    {"type": "name", "name": "one"},
+		    {"type": "name", "name": "a"}
+		]
+	    }
+        },
+        {
+            "type": "call",
+            "args": [
+		{"type": "name", "name": "inc"},
+                {"type": "integer", "value": 10}
+            ]
+        }
+    ]
+}

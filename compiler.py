@@ -10,6 +10,7 @@ module.triple = "x86_64-unknown-linux-gnu"
 def type_to_ir(type):
     if type[0] == "Int":
         return ir.IntType(32)
+    raise ValueError("Unknown type: " + str(type))
     if type[0] == "a":
         return ir.IntType(32)
     elif type[0] == "->":
@@ -21,38 +22,17 @@ def type_to_ir(type):
         return ir.FunctionType(ret_type, arg_types)
 
 class Scope:
-    def __init__(self, parent):
-        if parent:
-            self.values = parent.values.copy()
+    def __init__(self):
+        self.values = dict()
 
-    @classmethod
-    def root(cls, internal_calls):
-        scope = cls(None)
-        scope.values = internal_calls
-        return scope
-
-    def add_value(self, name, value):
-        new = self.__class__(self)
+    def add(self, name, value):
+        new = self.__class__()
         new.values = self.values.copy()
-        new.values[name] = lambda builder, args: value
+        new.values[name] = value
         return new
 
-    def add_fn_env(self, name, fn_struct):
-        new = self.__class__(self)
-        new.values = self.values.copy()
-
-        def call(builder, args):
-            fn = builder.extract_value(fn_struct, 0, name)
-            env = builder.extract_value(fn_struct, 1, name)
-            builder.call(fn, [env] + args)
-
-        new.values[name] = call
-        return new
-
-    def call(self, name):
-        call = self.values.get(name)
-        if call: return call
-        return lambda builder, args: builder.call(find_fn(name), args)
+    def find(self, name):
+        return self.values[name]
 
 
 def build_struct(builder, values, name=""):
@@ -67,128 +47,127 @@ def build_struct(builder, values, name=""):
         struct = builder.insert_value(struct, e, i, step_name)
     return struct
 
-def generate_def_fn_env(ast, builder, scope):
+def generate_def_fn(ast, builder, scope):
     name = ast["name"]
-    fn = find_fn(name)
+    fn = find_fn(name + ".fn")
 
     env_values = [generate_expression(e, builder, scope)[0] for e in ast["env"]]
     env_struct = build_struct(builder, env_values, ast["name"] + ".env")
 
-    fn_struct = build_struct(builder, (fn, env_struct), ast["name"] + ".fn")
+    fn_struct = build_struct(builder, (fn, env_struct), ast["name"])
 
-    scope = scope.add_fn_env(name, fn_struct)
+    scope = scope.add(name, fn_struct)
 
     return (fn_struct, scope)
-
-def generate_def_fn_simple(ast, builder, scope):
-    name = ast["name"]
-    fn = find_fn(name)
-    return (fn, scope)
 
 def generate_def_name(ast, builder, scope):
     name = ast["name"]
     value, _ = generate_expression(ast["body"], builder, scope)
-    scope = scope.add_value(name, value)
+    scope = scope.add(name, value)
+    return (value, scope)
+
+def generate_name(ast, builder, scope):
+    value = scope.find(ast["name"])
+    return (value, scope)
+
+def generate_call(ast, builder, scope):
+    fn_struct, *args = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
+
+    fn = builder.extract_value(fn_struct, 0)
+    env = builder.extract_value(fn_struct, 1)
+
+    value = builder.call(fn, [env] + args)
+
+    return (value, scope)
+
+def generate_block(ast, builder, scope):
+    child_scope = scope
+    for e in ast["body"]:
+        value, child_scope = generate_expression(e, builder, child_scope)
     return (value, scope)
 
 def generate_integer(ast, builder, scope):
     return (ir.Constant(type_to_ir(ast["vtype"]), ast["value"]), scope)
 
-def generate_call(ast, builder, scope):
-    args = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
-    call = scope.call(ast["name"])
-
-    return (call(builder, args), scope)
-
-def generate_block(ast, builder, scope):
-    child_scope = Scope(scope)
-    for e in ast["body"]:
-        value, child_scope = generate_expression(e, builder, child_scope)
-    return (value, scope)
+def generate_instruction(ast, builder, scope):
+    if ast["name"] == "add":
+        lhs, rhs = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
+        value = builder.add(lhs, rhs)
+        return (value, scope)
+    else:
+        raise ValueError("Unknown instruction: " + ast["name"])
 
 def generate_expression(ast, builder, scope):
-    if ast["type"] == "def_fn_env":
-        return generate_def_fn_env(ast, builder, scope)
-    elif ast["type"] == "def_fn_simple":
-        return generate_def_fn_simple(ast, builder, scope)
-    elif ast["type"] == "def_name":
+    if ast["type"] == "def_name":
         return generate_def_name(ast, builder, scope)
-    elif ast["type"] == "integer":
-        return generate_integer(ast, builder, scope)
+    elif ast["type"] == "def_fn":
+        return generate_def_fn(ast, builder, scope)
+    elif ast["type"] == "name":
+        return generate_name(ast, builder, scope)
     elif ast["type"] == "call":
         return generate_call(ast, builder, scope)
     elif ast["type"] == "block":
         return generate_block(ast, builder, scope)
+    elif ast["type"] == "integer":
+        return generate_integer(ast, builder, scope)
+    elif ast["type"] == "instruction":
+        return generate_instruction(ast, builder, scope)
     else:
         raise ValueError("Wrong type: " + str(ast["type"]))
 
-def generate_fn(ast, root_scope):
-    fn = find_fn(ast["name"])
+def generate_fn(ast):
+    fn = find_fn(ast["name"] + ".fn")
 
     block = fn.append_basic_block("entry")
     builder = ir.IRBuilder(block)
 
-    scope = Scope(root_scope)
-    env = ast.get("env")
-    if env:
-        env_struct, *arg_values = fn.args
-        env_values = [builder.extract_value(env_struct, i, e["name"]) for i, e in enumerate(env)]
-        scope_values = [(x.name, x) for x in env_values + arg_values]
-    else:
-        scope_values = [(x.name, x) for x in fn.args]
+    env_struct, *arg_values = fn.args
+    env_values = [builder.extract_value(env_struct, i, e["name"]) for i, e in enumerate(ast["env"])]
+    scope_values = [(x.name, x) for x in env_values + arg_values]
 
+    scope = Scope()
     for name, value in scope_values:
-        scope = scope.add_value(name, value)
+        scope = scope.add(name, value)
 
     value, _ = generate_expression(ast["body"], builder, scope)
 
     builder.ret(value)
 
-def declare_fn(ast, *, is_main=False):
-    name = ast["name"]
+def declare_fn(ast):
     args = ast["args"]
 
-    type = ast["vtype"]
-    for arg in args:
-        assert type[0] == "->"
-        type = type[2]
-    ret_type = type_to_ir(type)
+    ret_type = type_to_ir(ast["ret_type"])
 
     arg_names = [arg["name"] for arg in args]
     arg_types = [type_to_ir(arg["vtype"]) for arg in args]
 
-    env = ast.get("env")
-    if env:
-        env_type = ir.LiteralStructType([type_to_ir(e["vtype"]) for e in env])
-        arg_names = [".env"] + arg_names
-        arg_types = [env_type] + arg_types
+    env_type = ir.LiteralStructType([type_to_ir(e["vtype"]) for e in ast["env"]])
+    arg_names = [".env"] + arg_names
+    arg_types = [env_type] + arg_types
 
-    fn = ir.Function(module, ir.FunctionType(ret_type, arg_types), name=name)
+    fn = ir.Function(module, ir.FunctionType(ret_type, arg_types), name=ast["name"] + ".fn")
     fn.args = tuple(ir.Argument(fn, t, n) for t, n in zip(arg_types, arg_names))
+
+def generate_main(main_body):
+    fn = ir.Function(module, ir.FunctionType(ir.IntType(32), ()), name="main")
+
+    block = fn.append_basic_block("entry")
+    builder = ir.IRBuilder(block)
+
+    value, _ = generate_expression(main_body, builder, Scope())
+    builder.ret(value)
 
 def find_fn(name):
     fn, *tail = [x for x in module.functions if x.name == name]
     return fn
 
 def generate_ast(ast):
-    fns = ast["fns"]
-    for fn in fns:
+    for fn in ast["fns"]:
         declare_fn(fn)
+    for fn in ast["fns"]:
+        generate_fn(fn)
 
-    scope = Scope.root({
-        "add": lambda builder, args: builder.add(args[0], args[1])
-    })
-    for fn in fns:
-        generate_fn(fn, scope)
-
-    main_ast = {
-        "name": "main",
-        "args": [],
-        "vtype": ["Int"],
-        "body": ast["main"]
-    }
-    declare_fn(main_ast, is_main=True)
-    generate_fn(main_ast, scope)
+    generate_main(ast["main"])
 
     return str(module)
 

@@ -11,10 +11,10 @@
 		"args": ["inner_1"],
 		"body": {
 		    "type": "call",
-		    "name": "add",
 		    "args": [
-			{"type": "call", "name": "outer_1", "args": []},
-			{"type": "call", "name": "inner_1", "args": []}
+			{"type": "name", "name": "add"},
+			{"type": "name", "name": "outer_1"},
+			{"type": "name", "name": "inner_1"}
 		    ]
 		}
             }
@@ -31,9 +31,9 @@
             "args": [],
             "body": {
                 "type": "call",
-                "name": "outer_fn",
                 "args": [
-		    {"type": "call", "name": "global_val", "args": []}
+		    {"type": "name", "name": "outer_fn"},
+		    {"type": "name", "name": "global_val"}
                 ]
             }
         },
