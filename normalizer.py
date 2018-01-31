@@ -25,7 +25,7 @@ class Scope:
         new.asts = self.asts.copy()
         new.loans = self.loans.copy()
         if new.parent is None:
-            new.fns = new.fns.copy()
+            new.fns = self.fns.copy()
         return new
 
     def add(self, ast):

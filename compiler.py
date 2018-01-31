@@ -3,6 +3,7 @@
 from llvmlite import ir
 
 int_type = ir.IntType(32)
+env_cast_type = ir.PointerType(ir.IntType(8))
 
 module = ir.Module()
 module.triple = "x86_64-unknown-linux-gnu"
@@ -10,16 +11,12 @@ module.triple = "x86_64-unknown-linux-gnu"
 def type_to_ir(type):
     if type[0] == "Int":
         return ir.IntType(32)
+    if type[0] == "->":
+        arg_type = type_to_ir(type[1])
+        ret_type = type_to_ir(type[2])
+        function_type = ir.FunctionType(ret_type, [env_cast_type] + [arg_type])
+        return ir.LiteralStructType((ir.PointerType(function_type), env_cast_type))
     raise ValueError("Unknown type: " + str(type))
-    if type[0] == "a":
-        return ir.IntType(32)
-    elif type[0] == "->":
-        arg_types = []
-        while type[0] == "->":
-            arg_types.append(type_to_ir(type[1]))
-            type = type[2]
-        ret_type = type_to_ir(type)
-        return ir.FunctionType(ret_type, arg_types)
 
 class Scope:
     def __init__(self):
@@ -35,26 +32,21 @@ class Scope:
         return self.values[name]
 
 
-def build_struct(builder, values, name=""):
-    struct_type = ir.LiteralStructType([v.type for v in values])
-    struct = ir.Constant(struct_type, ir.Undefined)
-    for i, e in enumerate(values):
-        is_last = i == len(values) -1
-        if name and not is_last:
-            step_name = name + "." + str(i)
-        else:
-            step_name = name
-        struct = builder.insert_value(struct, e, i, step_name)
-    return struct
-
 def generate_def_fn(ast, builder, scope):
     name = ast["name"]
     fn = find_fn(name + ".fn")
 
     env_values = [generate_expression(e, builder, scope)[0] for e in ast["env"]]
-    env_struct = build_struct(builder, env_values, ast["name"] + ".env")
+    env_type = ir.LiteralStructType([e.type for e in env_values])
+    env_ptr = builder.alloca(env_type, name=ast["name"] + ".env")
+    for i, (value, e) in enumerate(zip(env_values, ast["env"])):
+        indices = [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), i)]
+        e_ptr = builder.gep(env_ptr, indices, name=ast["name"] + ".env." + e["name"])
+        builder.store(value, e_ptr)
+    env_ptr_cast = builder.bitcast(env_ptr, env_cast_type, ast["name"] + ".envcast")
 
-    fn_struct = build_struct(builder, (fn, env_struct), ast["name"])
+    fn_struct = ir.Constant.literal_struct((fn, ir.Constant(env_ptr_cast.type, None)))
+    fn_struct = builder.insert_value(fn_struct, env_ptr_cast, 1, name)
 
     scope = scope.add(name, fn_struct)
 
@@ -121,8 +113,14 @@ def generate_fn(ast):
     block = fn.append_basic_block("entry")
     builder = ir.IRBuilder(block)
 
-    env_struct, *arg_values = fn.args
-    env_values = [builder.extract_value(env_struct, i, e["name"]) for i, e in enumerate(ast["env"])]
+    env_ptr, *arg_values = fn.args
+    env_type = ir.LiteralStructType([type_to_ir(e["vtype"]) for e in ast["env"]])
+    env_ptr = builder.bitcast(env_ptr, ir.PointerType(env_type), ".env")
+    def get_env_value(i, e):
+        indices = [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), i)]
+        ptr = builder.gep(env_ptr, indices, name=".env." + e["name"])
+        return builder.load(ptr, name=e["name"])
+    env_values = [get_env_value(i, e) for i, e in enumerate(ast["env"])]
     scope_values = [(x.name, x) for x in env_values + arg_values]
 
     scope = Scope()
@@ -141,9 +139,8 @@ def declare_fn(ast):
     arg_names = [arg["name"] for arg in args]
     arg_types = [type_to_ir(arg["vtype"]) for arg in args]
 
-    env_type = ir.LiteralStructType([type_to_ir(e["vtype"]) for e in ast["env"]])
-    arg_names = [".env"] + arg_names
-    arg_types = [env_type] + arg_types
+    arg_names = [".envcast"] + arg_names
+    arg_types = [env_cast_type] + arg_types
 
     fn = ir.Function(module, ir.FunctionType(ret_type, arg_types), name=ast["name"] + ".fn")
     fn.args = tuple(ir.Argument(fn, t, n) for t, n in zip(arg_types, arg_names))

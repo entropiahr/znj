@@ -10,9 +10,9 @@
 		"name": "inner_fn",
 		"args": ["inner_1"],
 		"body": {
-		    "type": "call",
+		    "type": "instruction",
+		    "name": "add",
 		    "args": [
-			{"type": "name", "name": "add"},
 			{"type": "name", "name": "outer_1"},
 			{"type": "name", "name": "inner_1"}
 		    ]
@@ -39,8 +39,8 @@
         },
         {
             "type": "call",
-            "name": "inner_instance",
             "args": [
+		{"type": "name", "name": "inner_instance"},
                 {"type": "integer", "value": 1}
             ]
         }
