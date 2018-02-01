@@ -63,13 +63,17 @@ def generate_name(ast, builder, scope):
     return (value, scope)
 
 def generate_call(ast, builder, scope):
-    fn_struct, *args = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
+    call, *args = [generate_expression(arg, builder, scope)[0] for arg in ast["args"]]
+    def single_call(call, args):
+        if not args: return call
+        fn = builder.extract_value(call, 0)
+        env = builder.extract_value(call, 1)
 
-    fn = builder.extract_value(fn_struct, 0)
-    env = builder.extract_value(fn_struct, 1)
+        arg, *args = args
+        call = builder.call(fn, [env, arg])
+        return single_call(call, args)
 
-    value = builder.call(fn, [env] + args)
-
+    value = single_call(call, args)
     return (value, scope)
 
 def generate_block(ast, builder, scope):

@@ -108,9 +108,7 @@ def normalize_def(ast, scope, requested_type):
     type = type_fn([arg["vtype"] for arg in args], ret_type)
     type = type_validate(type, requested_type)
 
-    is_function = type[0] == "->"
-
-    if is_function:
+    if args:
         loan_calls = []
         for l in body_scope.loans:
             l_scope = Scope(scope)
