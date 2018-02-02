@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """
-This module translates pure ast to ast with normalized functions.
+This module translates simplified ast to ast with normalized functions.
 
-Normalized functions with their bodies are in "fn" field, while their definition
-is with the rest of the code in "main" field.
+Every function is translated to closure object. Closure object is a struct with
+normalized function and function environment.
+
+Normalized function takes two arguments. First argument is environment and
+second argument is just a single argument. Function can return type or another
+function as a closure.
+
+Normalized functions with their bodies are in "fn" field, while their closures
+are created in a function that uses them with the rest of the variables.
 
 Also, this module transforms "def" that has no "args" to "def_name", and "def"
-with "args" to "def_fn_simple" or "def_fn_env".
+with "args" to "def_fn".
 
-"def_fn_simple" can be called by only supplying "args" while "def_fn_env" must
-be called with its "env".
+Every function must be called as closure by supplying environment as a first
+argument and a single argument as a second argument.
 """
 
 
@@ -86,60 +93,59 @@ def type_validate(a, b):
 def type_unknown():
     return "unknown"
 
-def type_fn(arg_types, ret_type):
-    type = ret_type
-    for arg_type in arg_types:
-        type = ["->", arg_type, type]
-    return type
+def type_function_split(type):
+    if type == type_unknown(): return (type_unknown(), type_unknown())
+    if type[0] != "->": raise ValueError("Type " + str(type) + " is not a functinon.")
+    return (type[1], type[2])
+
+def type_function_create(arg_type, ret_type):
+    return ["->", arg_type, ret_type]
 
 
 def normalize_def(ast, scope, requested_type):
-    arg_names = ast["args"]
-    args = [{"type": "arg", "name": name, "vtype": type_unknown()} for name in arg_names] 
-
     body_scope = Scope(scope)
-    for arg in args:
-        body_scope = body_scope.add(arg)
 
-    body, body_scope = normalize_expression(ast["body"], body_scope, type_unknown())
+    body, body_scope = normalize_expression(ast["body"], body_scope, requested_type)
     scope = body_scope.parent
 
-    ret_type = body["vtype"]
-    type = type_fn([arg["vtype"] for arg in args], ret_type)
-    type = type_validate(type, requested_type)
-
-    if args:
-        loan_calls = []
-        for l in body_scope.loans:
-            l_scope = Scope(scope)
-            l, l_scope = normalize_name({"type": "name", "name": l["name"]}, l_scope, l["vtype"])
-            loan_calls.append(l)
-            scope = l_scope.parent
-
-        ast = {
-            "type": "def_fn",
-            "name": ast["name"],
-            "env": loan_calls,
-            "vtype": type
-        }
-        fn = {
-            "name": ast["name"],
-            "env": [{"type": "env_arg", "name": l["name"], "vtype": l["vtype"]} for l in loan_calls],
-            "args": args,
-            "ret_type": ret_type,
-            "body": body
-        }
-
-        scope = scope.add_fn(fn)
-    else:
-        ast = {
-            "type": "def_name",
-            "name": ast["name"],
-            "vtype": type,
-            "body": body
-        }
+    ast["body"] = body
+    ast["vtype"] = body["vtype"]
 
     scope = scope.add(ast)
+
+    return (ast, scope)
+
+def normalize_fn(ast, scope, requested_type):
+    arg_type, ret_type = type_function_split(requested_type)
+    arg = {"type": "arg", "name": ast["arg"], "vtype": arg_type}
+
+    body_scope = Scope(scope).add(arg)
+    body, body_scope = normalize_expression(ast["body"], body_scope, ret_type)
+    scope = body_scope.parent
+
+    arg_type = arg["vtype"] # uses mutability!
+    ret_type = body["vtype"]
+    type = type_validate(requested_type, type_function_create(arg_type, ret_type))
+
+    loan_calls = []
+    for l in body_scope.loans:
+        l_scope = Scope(scope)
+        l, l_scope = normalize_name({"type": "name", "name": l["name"]}, l_scope, l["vtype"])
+        loan_calls.append(l)
+        scope = l_scope.parent
+
+    fn = {
+        "name": ast["name"] + ".fn",
+        "env": [{"type": "env_arg", "name": l["name"], "vtype": l["vtype"]} for l in loan_calls],
+        "arg": arg,
+        "ret_type": ret_type,
+        "body": body
+    }
+    scope = scope.add_fn(fn)
+
+    ast["env"] = loan_calls
+    ast["vtype"] = type
+    del ast["body"]
 
     return (ast, scope)
 
@@ -154,36 +160,22 @@ def normalize_name(ast, scope, type):
     return (ast, scope)
 
 def normalize_call(ast, scope, requested_type):
-    assert len(ast["args"]) >= 2
-    caller, *args = ast["args"]
+    call_type = type_function_create(type_unknown(), requested_type)
 
-    caller_type = requested_type
-    for _ in args:
-        caller_type = ["->", type_unknown(), caller_type]
+    call_scope = Scope(scope)
+    call, call_scope = normalize_expression(ast["call"], call_scope, call_type)
+    scope = call_scope.parent
 
-    caller_scope = Scope(scope)
-    caller, caller_scope = normalize_expression(caller, caller_scope, caller_type)
-    scope = caller_scope.parent
-    caller_type = caller["vtype"]
+    arg_type, type = type_function_split(call["vtype"])
 
-    type = caller_type
-    arg_types = []
-    for _ in args:
-        if type[0] != "->":
-            raise ValueError("Passed more arguments then needed in: " + call["name"])
-        arg_types.append(type[1])
-        type = type[2]
-    type = type_validate(type, requested_type)
+    arg_scope = Scope(scope)
+    arg, arg_scope = normalize_expression(ast["arg"], arg_scope, arg_type)
+    scope = arg_scope.parent
 
-    new_args = []
-    for arg, arg_type in zip(args, arg_types):
-        arg_scope = Scope(scope)
-        arg, arg_scope = normalize_expression(arg, arg_scope, arg_type)
-        scope = arg_scope.parent
-        new_args.append(arg)
+    ast["vtype"] = type_validate(requested_type, type)
 
-    ast["args"] = [caller] + new_args
-    ast["vtype"] = type
+    ast["call"] = call
+    ast["arg"] = arg
 
     return (ast, scope)
 
@@ -208,7 +200,7 @@ def normalize_integer(ast, scope, type):
     return (ast, scope)
 
 def normalize_instruction(ast, scope, type):
-    if ast["name"] == "add":
+    if ast["instruction"] == "add":
         args = []
         for arg in ast["args"]:
             arg_scope = Scope(scope)
@@ -224,6 +216,8 @@ def normalize_instruction(ast, scope, type):
 def normalize_expression(ast, scope, type):
     if ast["type"] == "def":
         return normalize_def(ast, scope, type)
+    elif ast["type"] == "fn":
+        return normalize_fn(ast, scope, type)
     elif ast["type"] == "name":
         return normalize_name(ast, scope, type)
     elif ast["type"] == "call":

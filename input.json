@@ -6,12 +6,12 @@
             "name": "val_x",
             "args": [],
             "body": {
-                "type": "call",
-                "name": "add",
-                "args": [
+		"type": "instruction",
+		"instruction": "add",
+		"args": [
                     {"type": "integer", "value": 1},
                     {"type": "integer", "value": 1}
-                ]
+		]
             }
         },
         {
@@ -19,18 +19,18 @@
             "name": "lambda",
             "args": ["number"],
             "body": {
-                "type": "call",
-                "name": "add",
-                "args": [
-                    {"type": "call", "name": "val_x", "args": []},
-                    {"type": "call", "name": "number", "args": []}
-                ]
+		"type": "instruction",
+		"instruction": "add",
+		"args": [
+                    {"type": "name", "name": "val_x"},
+                    {"type": "name", "name": "number"}
+		]
             }
         },
         {
             "type": "call",
-            "name": "lambda",
             "args": [
+                {"type": "name", "name": "lambda"},
                 {"type": "integer", "value": 20}
             ]
         }

@@ -11,7 +11,7 @@
 		"args": ["inner_1"],
 		"body": {
 		    "type": "instruction",
-		    "name": "add",
+		    "instruction": "add",
 		    "args": [
 			{"type": "name", "name": "outer_1"},
 			{"type": "name", "name": "inner_1"}
