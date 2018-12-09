@@ -22,7 +22,7 @@ class TestDefaultMatcher:
 
     @staticmethod
     def test_update_dpos_succeeds():
-        token = Token(pos=13, dpos=(5, 6), kind="?", val="myval", len=5)
+        token = Token(pos=13, dpos=(5, 6), kind="?", val="myval")
         assert DefaultMatcher.update_dpos(token) == (5, 11)
 
 
@@ -47,7 +47,7 @@ class TestNewlinesMatcher:
         assert self.matcher.get_match(text).span() == (0, len(values))
 
     def test_update_dpos(self):
-        token = Token(pos=13, dpos=(5, 6), kind="?", val="\n" * 5, len=5)
+        token = Token(pos=13, dpos=(5, 6), kind="?", val="\n"*5)
         assert self.matcher.update_dpos(token) == (10, 1)
 
 

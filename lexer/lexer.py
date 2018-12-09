@@ -2,7 +2,7 @@ import re
 from collections import namedtuple
 from pprint import pprint
 
-Token = namedtuple('Token', 'pos dpos kind val len')
+Token = namedtuple('Token', 'pos dpos kind val')
 
 
 class DefaultMatcher:
@@ -26,11 +26,11 @@ class DefaultMatcher:
     @classmethod
     def create_token(cls, value, pos, dpos):
         kind = cls.get_kind(value)
-        return Token(pos=pos, dpos=dpos, kind=kind, val=value, len=len(value))
+        return Token(pos=pos, dpos=dpos, kind=kind, val=value)
 
     @classmethod
     def update_dpos(cls, token):
-        return token.dpos[0], token.dpos[1] + token.len
+        return token.dpos[0], token.dpos[1] + len(token.val)
 
     @classmethod
     def get_match(cls, text):
@@ -48,7 +48,7 @@ class NewlinesMatcher(DefaultMatcher):
 
     @classmethod
     def update_dpos(cls, token):
-        return token.dpos[0] + token.len, 1
+        return token.dpos[0] + len(token.val), 1
 
 
 class SymbolMatcher(DefaultMatcher):
