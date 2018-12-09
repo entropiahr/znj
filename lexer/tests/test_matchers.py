@@ -57,6 +57,8 @@ class TestSymbolMatcher:
     @given(st.text(alphabet=ascii_letters, min_size=1))
     def test_regex_succeeds(self, text):
         assert self.matcher.get_match(text).span() == (0, len(text))
+        assert self.matcher.get_match(text + "?").span() == (0, len(text) + 1)
+        assert self.matcher.get_match(text + "!").span() == (0, len(text) + 1)
 
 
 class TestSpecialMatcher:

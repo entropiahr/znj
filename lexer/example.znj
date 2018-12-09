@@ -5,8 +5,17 @@ meaning_of_life = 42
 greet text =
   println "Hello" + text + "!";
 
+greetTwice text = (
+  println "Hello" + text + ", once!";
+  println "Hello" + text + ", again!";
+)
+
+sum a b = a + b;
+
 text = "world!";
 
 run = greet text;
+
+eq? (sum 3 4) 7
 
 run ();

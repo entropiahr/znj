@@ -52,7 +52,7 @@ class NewlinesMatcher(DefaultMatcher):
 
 
 class SymbolMatcher(DefaultMatcher):
-    regex = re.compile(r'^[_a-zA-Z]+')
+    regex = re.compile(r'^[_a-zA-Z]+[!?]?')
     kind = "symbol"
 
 
@@ -97,6 +97,8 @@ def run():
                 continue
             break
         pprint(tokens)
+        if position == length:
+            print("EOF reached!")
         exit(0)
 
 
