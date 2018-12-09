@@ -6,6 +6,8 @@ Token = namedtuple('Token', 'pos dpos kind val len')
 
 
 class DefaultMatcher:
+    """Abstract class, should not use directly"""
+
     regex = None
     kind = None
 
@@ -27,8 +29,12 @@ class DefaultMatcher:
         return Token(pos=pos, dpos=dpos, kind=kind, val=value, len=len(value))
 
     @classmethod
-    def update_dpos(cls, token, dpos):
-        return dpos[0], dpos[1] + token.len
+    def update_dpos(cls, token):
+        return token.dpos[0], token.dpos[1] + token.len
+
+    @classmethod
+    def get_match(cls, text):
+        return cls.get_regex().match(text)
 
 
 class WhitespaceMatcher(DefaultMatcher):
@@ -41,12 +47,12 @@ class NewlinesMatcher(DefaultMatcher):
     kind = "newlines"
 
     @classmethod
-    def update_dpos(cls, token, dpos):
-        return dpos[0] + token.len, 1
+    def update_dpos(cls, token):
+        return token.dpos[0] + token.len, 1
 
 
 class SymbolMatcher(DefaultMatcher):
-    regex = re.compile(r'^[_a-z]+')
+    regex = re.compile(r'^[_a-zA-Z]+')
     kind = "symbol"
 
 
@@ -66,7 +72,7 @@ class StringMatcher(DefaultMatcher):
 
 
 class NumberMatcher(DefaultMatcher):
-    regex = re.compile(r'[0-9]*\.?[0-9]*')
+    regex = re.compile(r'[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?')
     kind = "number"
 
 
@@ -86,7 +92,7 @@ def run():
                 value = code[position:position + token_len]
                 token = matcher.create_token(value, position, dpos)
                 position += token_len
-                dpos = matcher.update_dpos(token, dpos)
+                dpos = matcher.update_dpos(token)
                 tokens.append(token)
                 continue
             break
@@ -96,7 +102,7 @@ def run():
 
 def find_matcher(code, position):
     for matcher in matchers:
-        match = matcher.regex.match(code[position:])
+        match = matcher.get_match(code[position:])
         if match:
             return matcher, match
     return None, None
