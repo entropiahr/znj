@@ -1,0 +1,7 @@
+output/0_lexer/
+output/1_parser/
+output/2_simplifier/
+output/3_normalizer/
+output/4_compiler/
+output/5_assembly/
+output/6_executable/

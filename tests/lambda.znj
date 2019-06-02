@@ -1,0 +1,3 @@
+x = instruction add 1 1;
+lambda y = instruction add x y;
+lambda 1

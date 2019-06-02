@@ -1,0 +1,6 @@
+foo = external putchar 1;
+foo 122;
+foo 110;
+foo 106;
+foo 10;
+0

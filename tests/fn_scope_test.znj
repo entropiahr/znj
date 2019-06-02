@@ -1,0 +1,7 @@
+outer_fn outer_1 =
+  inner_fn inner_1 =
+    instruction add outer_1 inner_1;
+
+global_val = 1;
+inner_instance = outer_fn global_val;
+inner_instance 1
