@@ -1,0 +1,113 @@
+{
+  "type": "block",
+  "seperator": ";",
+  "expressions": [
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "main"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": null,
+          "expressions": []
+        },
+        "rhs": {
+          "type": "block",
+          "seperator": ";",
+          "expressions": [
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "test"
+              },
+              "rhs": {
+                "type": "integer",
+                "value": "1"
+              }
+            },
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "test"
+              },
+              "rhs": {
+                "type": "name",
+                "value": "test"
+              }
+            },
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "test"
+              },
+              "rhs": {
+                "type": "instruction",
+                "instruction": "add",
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "name",
+                    "value": "test"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "test"
+              },
+              "rhs": {
+                "type": "instruction",
+                "instruction": "add",
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "name",
+                    "value": "test"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "test"
+              },
+              "rhs": {
+                "type": "name",
+                "value": "test"
+              }
+            },
+            {
+              "type": "name",
+              "value": "test"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

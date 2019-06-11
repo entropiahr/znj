@@ -1,0 +1,85 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "$0.main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "name": "$0.test",
+              "expression": {
+                "type": "integer",
+                "value": "1"
+              }
+            },
+            {
+              "type": "def",
+              "name": "$1.test",
+              "expression": {
+                "type": "name",
+                "value": "$0.test"
+              }
+            },
+            {
+              "type": "def",
+              "name": "$2.test",
+              "expression": {
+                "type": "instruction",
+                "instruction": "add",
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "name",
+                    "value": "$1.test"
+                  }
+                ],
+                "name": "$2.test$res"
+              }
+            },
+            {
+              "type": "def",
+              "name": "$3.test",
+              "expression": {
+                "type": "instruction",
+                "instruction": "add",
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "name",
+                    "value": "$2.test"
+                  }
+                ],
+                "name": "$3.test$res"
+              }
+            },
+            {
+              "type": "def",
+              "name": "$4.test",
+              "expression": {
+                "type": "name",
+                "value": "$3.test"
+              }
+            },
+            {
+              "type": "name",
+              "value": "$4.test"
+            }
+          ]
+        },
+        "name": "$0.main$fn"
+      }
+    }
+  ]
+}

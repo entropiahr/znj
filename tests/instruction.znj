@@ -1,0 +1,7 @@
+add = (x, y) -> instruction add(x, y);
+sub = (x, y) -> instruction sub(x, y);
+
+main = () -> (
+  x = sub(add(10, 10), 5);
+  x
+)

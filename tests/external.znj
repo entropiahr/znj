@@ -1,0 +1,3 @@
+putchar = external putchar;
+
+main = () -> putchar(41)

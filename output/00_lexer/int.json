@@ -1,0 +1,25 @@
+[
+  {
+    "type": "name",
+    "value": "main"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "integer",
+    "value": "1"
+  },
+  {
+    "type": "EOF"
+  }
+]

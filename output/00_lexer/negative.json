@@ -1,0 +1,65 @@
+[
+  {
+    "type": "name",
+    "value": "main"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "integer",
+    "value": "-7"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "instruction"
+  },
+  {
+    "type": "name",
+    "value": "add"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "integer",
+    "value": "5"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "EOF"
+  }
+]

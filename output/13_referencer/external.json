@@ -1,0 +1,38 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$1.main$fn"
+  },
+  "statements": [
+    {
+      "type": "external",
+      "external": "putchar",
+      "name": "$0.putchar$external"
+    },
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$1.main$fn",
+      "body": [
+        {
+          "type": "call",
+          "name": "$res",
+          "call": {
+            "type": "name",
+            "value": "$0.putchar$external"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$res"
+      }
+    }
+  ]
+}

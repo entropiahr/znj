@@ -1,0 +1,17 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "integer",
+          "value": "1"
+        }
+      }
+    }
+  ]
+}

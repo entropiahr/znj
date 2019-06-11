@@ -1,0 +1,52 @@
+[
+  {
+    "type": "name",
+    "value": "putchar"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "external"
+  },
+  {
+    "type": "name",
+    "value": "putchar"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "main"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "name",
+    "value": "putchar"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "integer",
+    "value": "41"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "EOF"
+  }
+]

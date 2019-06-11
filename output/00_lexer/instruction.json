@@ -1,0 +1,187 @@
+[
+  {
+    "type": "name",
+    "value": "add"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "y"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "instruction"
+  },
+  {
+    "type": "name",
+    "value": "add"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "y"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "sub"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "y"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "instruction"
+  },
+  {
+    "type": "name",
+    "value": "sub"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "y"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "main"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "name",
+    "value": "sub"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "add"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "integer",
+    "value": "10"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "integer",
+    "value": "10"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "integer",
+    "value": "5"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "EOF"
+  }
+]

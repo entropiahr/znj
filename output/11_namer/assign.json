@@ -1,0 +1,22 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "$0.main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "def",
+          "name": ".test",
+          "expression": {
+            "type": "integer",
+            "value": "1"
+          }
+        },
+        "name": "$0.main$fn"
+      }
+    }
+  ]
+}

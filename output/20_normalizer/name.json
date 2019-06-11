@@ -1,0 +1,45 @@
+{
+  "functions": [
+    {
+      "name": "$0.main$fn",
+      "external": false,
+      "args": [],
+      "body": [
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$2.test$res",
+          "args": [
+            {
+              "type": "integer",
+              "value": "1"
+            },
+            {
+              "type": "integer",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$3.test$res",
+          "args": [
+            {
+              "type": "integer",
+              "value": "1"
+            },
+            {
+              "type": "name",
+              "value": "$2.test$res"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$3.test$res"
+      }
+    }
+  ]
+}

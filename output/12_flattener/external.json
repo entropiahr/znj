@@ -1,0 +1,54 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$1.main"
+  },
+  "statements": [
+    {
+      "type": "external",
+      "external": "putchar",
+      "name": "$0.putchar$external"
+    },
+    {
+      "type": "def",
+      "name": "$0.putchar",
+      "expression": {
+        "type": "name",
+        "value": "$0.putchar$external"
+      }
+    },
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$1.main$fn",
+      "body": [
+        {
+          "type": "call",
+          "name": "$res",
+          "call": {
+            "type": "name",
+            "value": "$0.putchar"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$res"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$1.main",
+      "expression": {
+        "type": "name",
+        "value": "$1.main$fn"
+      }
+    }
+  ]
+}

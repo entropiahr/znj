@@ -1,0 +1,96 @@
+[
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "arg1"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "arg2"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "name",
+    "value": "arg1"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "main"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "integer",
+    "value": "1"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "integer",
+    "value": "2"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "x"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "EOF"
+  }
+]

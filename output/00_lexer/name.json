@@ -1,0 +1,141 @@
+[
+  {
+    "type": "name",
+    "value": "main"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "integer",
+    "value": "1"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "instruction"
+  },
+  {
+    "type": "name",
+    "value": "add"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "integer",
+    "value": "1"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "instruction"
+  },
+  {
+    "type": "name",
+    "value": "add"
+  },
+  {
+    "type": "("
+  },
+  {
+    "type": "integer",
+    "value": "1"
+  },
+  {
+    "type": ","
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": "="
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "test"
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "EOF"
+  }
+]

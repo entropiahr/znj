@@ -1,0 +1,74 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$1.main"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [
+        "arg1",
+        "arg2"
+      ],
+      "name": "$0.test$fn",
+      "body": [],
+      "return": {
+        "type": "name",
+        "value": "arg1"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$0.test",
+      "expression": {
+        "type": "name",
+        "value": "$0.test$fn"
+      }
+    },
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$1.main$fn",
+      "body": [
+        {
+          "type": "call",
+          "name": "$0.x$res",
+          "call": {
+            "type": "name",
+            "value": "$0.test"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "1"
+            },
+            {
+              "type": "integer",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "type": "def",
+          "name": "$0.x",
+          "expression": {
+            "type": "name",
+            "value": "$0.x$res"
+          }
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$0.x"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$1.main",
+      "expression": {
+        "type": "name",
+        "value": "$1.main$fn"
+      }
+    }
+  ]
+}

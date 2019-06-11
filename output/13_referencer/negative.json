@@ -1,0 +1,34 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$0.main$fn"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$0.main$fn",
+      "body": [
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$1$res",
+          "args": [
+            {
+              "type": "integer",
+              "value": "5"
+            },
+            {
+              "type": "integer",
+              "value": "-7"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$1$res"
+      }
+    }
+  ]
+}

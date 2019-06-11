@@ -1,0 +1,53 @@
+{
+  "type": "block",
+  "seperator": ";",
+  "expressions": [
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "putchar"
+      },
+      "rhs": {
+        "type": "external",
+        "external": "putchar"
+      }
+    },
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "main"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": null,
+          "expressions": []
+        },
+        "rhs": {
+          "type": "operator",
+          "operator": "call",
+          "lhs": {
+            "type": "name",
+            "value": "putchar"
+          },
+          "rhs": {
+            "type": "block",
+            "seperator": null,
+            "expressions": [
+              {
+                "type": "integer",
+                "value": "41"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$0.main"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$0.main$fn",
+      "body": [
+        {
+          "type": "def",
+          "name": "$0.test",
+          "expression": {
+            "type": "integer",
+            "value": "1"
+          }
+        },
+        {
+          "type": "def",
+          "name": "$1.test",
+          "expression": {
+            "type": "name",
+            "value": "$0.test"
+          }
+        },
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$2.test$res",
+          "args": [
+            {
+              "type": "integer",
+              "value": "1"
+            },
+            {
+              "type": "name",
+              "value": "$1.test"
+            }
+          ]
+        },
+        {
+          "type": "def",
+          "name": "$2.test",
+          "expression": {
+            "type": "name",
+            "value": "$2.test$res"
+          }
+        },
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$3.test$res",
+          "args": [
+            {
+              "type": "integer",
+              "value": "1"
+            },
+            {
+              "type": "name",
+              "value": "$2.test"
+            }
+          ]
+        },
+        {
+          "type": "def",
+          "name": "$3.test",
+          "expression": {
+            "type": "name",
+            "value": "$3.test$res"
+          }
+        },
+        {
+          "type": "def",
+          "name": "$4.test",
+          "expression": {
+            "type": "name",
+            "value": "$3.test"
+          }
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$4.test"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$0.main",
+      "expression": {
+        "type": "name",
+        "value": "$0.main$fn"
+      }
+    }
+  ]
+}

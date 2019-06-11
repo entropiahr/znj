@@ -1,0 +1,113 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$2.main$fn"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [
+        "x",
+        "y"
+      ],
+      "name": "$0.add$fn",
+      "body": [
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$res",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$res"
+      }
+    },
+    {
+      "type": "fn",
+      "args": [
+        "x",
+        "y"
+      ],
+      "name": "$1.sub$fn",
+      "body": [
+        {
+          "type": "instruction",
+          "instruction": "sub",
+          "name": "$res",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$res"
+      }
+    },
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$2.main$fn",
+      "body": [
+        {
+          "type": "call",
+          "name": "$0.x$call0$res",
+          "call": {
+            "type": "name",
+            "value": "$0.add$fn"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "10"
+            },
+            {
+              "type": "integer",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "type": "call",
+          "name": "$0.x$res",
+          "call": {
+            "type": "name",
+            "value": "$1.sub$fn"
+          },
+          "args": [
+            {
+              "type": "name",
+              "value": "$0.x$call0$res"
+            },
+            {
+              "type": "integer",
+              "value": "5"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$0.x$res"
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "add",
+      "expression": {
+        "type": "fn",
+        "args": [
+          "x",
+          "y"
+        ],
+        "expression": {
+          "type": "instruction",
+          "instruction": "add",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "def",
+      "name": "sub",
+      "expression": {
+        "type": "fn",
+        "args": [
+          "x",
+          "y"
+        ],
+        "expression": {
+          "type": "instruction",
+          "instruction": "sub",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "def",
+      "name": "main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "name": "x",
+              "expression": {
+                "type": "call",
+                "call": {
+                  "type": "name",
+                  "value": "sub"
+                },
+                "args": [
+                  {
+                    "type": "call",
+                    "call": {
+                      "type": "name",
+                      "value": "add"
+                    },
+                    "args": [
+                      {
+                        "type": "integer",
+                        "value": "10"
+                      },
+                      {
+                        "type": "integer",
+                        "value": "10"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "integer",
+                    "value": "5"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "name",
+              "value": "x"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "$0.add",
+      "expression": {
+        "type": "fn",
+        "args": [
+          "x",
+          "y"
+        ],
+        "expression": {
+          "type": "instruction",
+          "instruction": "add",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ],
+          "name": "$res"
+        },
+        "name": "$0.add$fn"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$1.sub",
+      "expression": {
+        "type": "fn",
+        "args": [
+          "x",
+          "y"
+        ],
+        "expression": {
+          "type": "instruction",
+          "instruction": "sub",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ],
+          "name": "$res"
+        },
+        "name": "$1.sub$fn"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$2.main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "name": "$0.x",
+              "expression": {
+                "type": "call",
+                "call": {
+                  "type": "name",
+                  "value": "$1.sub"
+                },
+                "args": [
+                  {
+                    "type": "call",
+                    "call": {
+                      "type": "name",
+                      "value": "$0.add"
+                    },
+                    "args": [
+                      {
+                        "type": "integer",
+                        "value": "10"
+                      },
+                      {
+                        "type": "integer",
+                        "value": "10"
+                      }
+                    ],
+                    "name": "$0.x$call0$res"
+                  },
+                  {
+                    "type": "integer",
+                    "value": "5"
+                  }
+                ],
+                "name": "$0.x$res"
+              }
+            },
+            {
+              "type": "name",
+              "value": "$0.x"
+            }
+          ]
+        },
+        "name": "$2.main$fn"
+      }
+    }
+  ]
+}

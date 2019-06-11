@@ -1,0 +1,34 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "putchar",
+      "expression": {
+        "type": "external",
+        "external": "putchar"
+      }
+    },
+    {
+      "type": "def",
+      "name": "main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "call",
+          "call": {
+            "type": "name",
+            "value": "putchar"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "41"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

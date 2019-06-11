@@ -1,0 +1,14 @@
+{
+  "functions": [
+    {
+      "name": "$0.main$fn",
+      "external": false,
+      "args": [],
+      "body": [],
+      "return": {
+        "type": "integer",
+        "value": "1"
+      }
+    }
+  ]
+}

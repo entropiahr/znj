@@ -1,0 +1,50 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$0.main"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$0.main$fn",
+      "body": [
+        {
+          "type": "def",
+          "name": "$0.x",
+          "expression": {
+            "type": "integer",
+            "value": "-7"
+          }
+        },
+        {
+          "type": "instruction",
+          "instruction": "add",
+          "name": "$1$res",
+          "args": [
+            {
+              "type": "integer",
+              "value": "5"
+            },
+            {
+              "type": "name",
+              "value": "$0.x"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$1$res"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$0.main",
+      "expression": {
+        "type": "name",
+        "value": "$0.main$fn"
+      }
+    }
+  ]
+}

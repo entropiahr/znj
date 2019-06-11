@@ -1,0 +1,61 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "$0.test",
+      "expression": {
+        "type": "fn",
+        "args": [
+          "arg1",
+          "arg2"
+        ],
+        "expression": {
+          "type": "name",
+          "value": "arg1"
+        },
+        "name": "$0.test$fn"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$1.main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "name": "$0.x",
+              "expression": {
+                "type": "call",
+                "call": {
+                  "type": "name",
+                  "value": "$0.test"
+                },
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "integer",
+                    "value": "2"
+                  }
+                ],
+                "name": "$0.x$res"
+              }
+            },
+            {
+              "type": "name",
+              "value": "$0.x"
+            }
+          ]
+        },
+        "name": "$1.main$fn"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "functions": [
+    {
+      "name": "$0.putchar$external",
+      "external": true
+    },
+    {
+      "name": "$1.main$fn",
+      "external": false,
+      "args": [],
+      "body": [
+        {
+          "type": "call",
+          "name": "$res",
+          "call": {
+            "type": "name",
+            "value": "$0.putchar$external"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$res"
+      }
+    }
+  ]
+}

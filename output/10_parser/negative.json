@@ -1,0 +1,40 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "name": "x",
+              "expression": {
+                "type": "integer",
+                "value": "-7"
+              }
+            },
+            {
+              "type": "instruction",
+              "instruction": "add",
+              "args": [
+                {
+                  "type": "integer",
+                  "value": "5"
+                },
+                {
+                  "type": "name",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

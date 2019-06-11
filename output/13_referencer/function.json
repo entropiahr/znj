@@ -1,0 +1,50 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$1.main$fn"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [
+        "arg1",
+        "arg2"
+      ],
+      "name": "$0.test$fn",
+      "body": [],
+      "return": {
+        "type": "name",
+        "value": "arg1"
+      }
+    },
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$1.main$fn",
+      "body": [
+        {
+          "type": "call",
+          "name": "$0.x$res",
+          "call": {
+            "type": "name",
+            "value": "$0.test$fn"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "1"
+            },
+            {
+              "type": "integer",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": "$0.x$res"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "block",
+  "seperator": ";",
+  "expressions": [
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "main"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": null,
+          "expressions": []
+        },
+        "rhs": {
+          "type": "integer",
+          "value": "1"
+        }
+      }
+    }
+  ]
+}

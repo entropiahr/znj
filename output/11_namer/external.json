@@ -1,0 +1,37 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "$0.putchar",
+      "expression": {
+        "type": "external",
+        "external": "putchar",
+        "name": "$0.putchar$external"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$1.main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "call",
+          "call": {
+            "type": "name",
+            "value": "$0.putchar"
+          },
+          "args": [
+            {
+              "type": "integer",
+              "value": "41"
+            }
+          ],
+          "name": "$res"
+        },
+        "name": "$1.main$fn"
+      }
+    }
+  ]
+}

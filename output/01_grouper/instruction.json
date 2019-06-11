@@ -1,0 +1,161 @@
+{
+  "type": "block",
+  "seperator": ";",
+  "expressions": [
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "add"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": ",",
+          "expressions": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        },
+        "rhs": {
+          "type": "instruction",
+          "instruction": "add",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "sub"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": ",",
+          "expressions": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        },
+        "rhs": {
+          "type": "instruction",
+          "instruction": "sub",
+          "args": [
+            {
+              "type": "name",
+              "value": "x"
+            },
+            {
+              "type": "name",
+              "value": "y"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "main"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": null,
+          "expressions": []
+        },
+        "rhs": {
+          "type": "block",
+          "seperator": ";",
+          "expressions": [
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "x"
+              },
+              "rhs": {
+                "type": "operator",
+                "operator": "call",
+                "lhs": {
+                  "type": "name",
+                  "value": "sub"
+                },
+                "rhs": {
+                  "type": "block",
+                  "seperator": ",",
+                  "expressions": [
+                    {
+                      "type": "operator",
+                      "operator": "call",
+                      "lhs": {
+                        "type": "name",
+                        "value": "add"
+                      },
+                      "rhs": {
+                        "type": "block",
+                        "seperator": ",",
+                        "expressions": [
+                          {
+                            "type": "integer",
+                            "value": "10"
+                          },
+                          {
+                            "type": "integer",
+                            "value": "10"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "integer",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "name",
+              "value": "x"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

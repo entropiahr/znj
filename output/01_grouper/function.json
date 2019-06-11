@@ -1,0 +1,93 @@
+{
+  "type": "block",
+  "seperator": ";",
+  "expressions": [
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "test"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": ",",
+          "expressions": [
+            {
+              "type": "name",
+              "value": "arg1"
+            },
+            {
+              "type": "name",
+              "value": "arg2"
+            }
+          ]
+        },
+        "rhs": {
+          "type": "name",
+          "value": "arg1"
+        }
+      }
+    },
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "main"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": null,
+          "expressions": []
+        },
+        "rhs": {
+          "type": "block",
+          "seperator": ";",
+          "expressions": [
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "x"
+              },
+              "rhs": {
+                "type": "operator",
+                "operator": "call",
+                "lhs": {
+                  "type": "name",
+                  "value": "test"
+                },
+                "rhs": {
+                  "type": "block",
+                  "seperator": ",",
+                  "expressions": [
+                    {
+                      "type": "integer",
+                      "value": "1"
+                    },
+                    {
+                      "type": "integer",
+                      "value": "2"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "name",
+              "value": "x"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

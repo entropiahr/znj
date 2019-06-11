@@ -1,0 +1,35 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$0.main"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$0.main$fn",
+      "body": [
+        {
+          "type": "def",
+          "name": ".test",
+          "expression": {
+            "type": "integer",
+            "value": "1"
+          }
+        }
+      ],
+      "return": {
+        "type": "name",
+        "value": ".test"
+      }
+    },
+    {
+      "type": "def",
+      "name": "$0.main",
+      "expression": {
+        "type": "name",
+        "value": "$0.main$fn"
+      }
+    }
+  ]
+}

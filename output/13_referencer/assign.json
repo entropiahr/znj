@@ -1,0 +1,18 @@
+{
+  "expression": {
+    "type": "name",
+    "value": "$0.main$fn"
+  },
+  "statements": [
+    {
+      "type": "fn",
+      "args": [],
+      "name": "$0.main$fn",
+      "body": [],
+      "return": {
+        "type": "integer",
+        "value": "1"
+      }
+    }
+  ]
+}

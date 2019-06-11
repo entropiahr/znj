@@ -1,0 +1,4 @@
+main = () -> (
+  x = -7;
+  instruction add(5, x)
+)

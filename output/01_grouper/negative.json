@@ -1,0 +1,55 @@
+{
+  "type": "block",
+  "seperator": ";",
+  "expressions": [
+    {
+      "type": "operator",
+      "operator": "=",
+      "lhs": {
+        "type": "name",
+        "value": "main"
+      },
+      "rhs": {
+        "type": "operator",
+        "operator": "->",
+        "lhs": {
+          "type": "block",
+          "seperator": null,
+          "expressions": []
+        },
+        "rhs": {
+          "type": "block",
+          "seperator": ";",
+          "expressions": [
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "name",
+                "value": "x"
+              },
+              "rhs": {
+                "type": "integer",
+                "value": "-7"
+              }
+            },
+            {
+              "type": "instruction",
+              "instruction": "add",
+              "args": [
+                {
+                  "type": "integer",
+                  "value": "5"
+                },
+                {
+                  "type": "name",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

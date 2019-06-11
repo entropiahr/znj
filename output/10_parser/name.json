@@ -1,0 +1,82 @@
+{
+  "type": "block",
+  "expressions": [
+    {
+      "type": "def",
+      "name": "main",
+      "expression": {
+        "type": "fn",
+        "args": [],
+        "expression": {
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "name": "test",
+              "expression": {
+                "type": "integer",
+                "value": "1"
+              }
+            },
+            {
+              "type": "def",
+              "name": "test",
+              "expression": {
+                "type": "name",
+                "value": "test"
+              }
+            },
+            {
+              "type": "def",
+              "name": "test",
+              "expression": {
+                "type": "instruction",
+                "instruction": "add",
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "name",
+                    "value": "test"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "def",
+              "name": "test",
+              "expression": {
+                "type": "instruction",
+                "instruction": "add",
+                "args": [
+                  {
+                    "type": "integer",
+                    "value": "1"
+                  },
+                  {
+                    "type": "name",
+                    "value": "test"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "def",
+              "name": "test",
+              "expression": {
+                "type": "name",
+                "value": "test"
+              }
+            },
+            {
+              "type": "name",
+              "value": "test"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

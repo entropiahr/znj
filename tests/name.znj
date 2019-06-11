@@ -1,0 +1,8 @@
+main = () -> (
+  test = 1;
+  test = test;
+  test = instruction add(1, test);
+  test = instruction add(1, test);
+  test = test;
+  test
+)
