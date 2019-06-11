@@ -1,7 +1,7 @@
 {
   "expression": {
     "type": "name",
-    "value": "$1.main"
+    "value": "main"
   },
   "statements": [
     {
@@ -10,7 +10,7 @@
         "arg1",
         "arg2"
       ],
-      "name": "$0.test$fn",
+      "name": "test",
       "body": [],
       "return": {
         "type": "name",
@@ -19,23 +19,23 @@
     },
     {
       "type": "def",
-      "name": "$0.test",
+      "name": "test",
       "expression": {
         "type": "name",
-        "value": "$0.test$fn"
+        "value": "test"
       }
     },
     {
       "type": "fn",
       "args": [],
-      "name": "$1.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "call",
-          "name": "$0.x$res",
+          "name": "x",
           "call": {
             "type": "name",
-            "value": "$0.test"
+            "value": "test"
           },
           "args": [
             {
@@ -50,24 +50,24 @@
         },
         {
           "type": "def",
-          "name": "$0.x",
+          "name": "x",
           "expression": {
             "type": "name",
-            "value": "$0.x$res"
+            "value": "x"
           }
         }
       ],
       "return": {
         "type": "name",
-        "value": "$0.x"
+        "value": "x"
       }
     },
     {
       "type": "def",
-      "name": "$1.main",
+      "name": "main",
       "expression": {
         "type": "name",
-        "value": "$1.main$fn"
+        "value": "main"
       }
     }
   ]

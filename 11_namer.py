@@ -7,60 +7,97 @@ reference errors. Types with result also get name.
 """
 
 
-def add_name(name, unique_name, scope):
-    scope = {**scope, name: unique_name}
-    return scope
+def get_unique_name(name, scope):
+    id = scope[name]
+    if id == 'empty':
+        return name
+    else:
+        unique_name = f'{name}.{scope[name]}'
+        return unique_name
 
 
-def name_ast(ast, parent, scope):
+def add_name(name, scope):
+    id = scope.get(name, None)
+    if id is None:
+        scope = {**scope, name: 'empty'}
+        return (name, scope)
+    else:
+        if id == 'empty':
+            id = 0
+        else:
+            id = id + 1
+
+        unique_name = f'{name}.{id}'
+        scope = {**scope, name: id}
+
+        return (unique_name, scope)
+
+
+def name_ast(ast, requested_name, parent, scope):
+    if requested_name:
+        name = requested_name
+    else:
+        name = parent
+
     if ast['type'] == 'integer':
         return (ast, scope)
     if ast['type'] == 'name':
-        return ({**ast, 'value': scope[ast['value']]}, scope)
+        unique_name = get_unique_name(ast['value'], scope)
+        return ({**ast, 'value': unique_name}, scope)
     elif ast['type'] == 'def':
         name = ast['name']
-        unique_name = f'{parent}.{name}'
-        new_scope = add_name(name, unique_name, scope)
+        name, new_scope = add_name(name, scope)
 
-        expression, _ = name_ast(ast['expression'], unique_name, scope)
-        return ({**ast, 'name': unique_name, 'expression': expression}, new_scope)
+        if requested_name:
+            name = requested_name
+
+        expression, _ = name_ast(ast['expression'], name, parent, scope)
+
+        return ({**ast, 'name': name, 'expression': expression}, new_scope)
     elif ast['type'] == 'fn':
         inner_scope = scope
+        args = []
         for arg in ast['args']:
-            inner_scope = add_name(arg, arg, inner_scope)
+            arg, inner_scope = add_name(arg, inner_scope)
+            args.append(arg)
 
-        expression, _ = name_ast(ast['expression'], '', inner_scope)
-        return ({**ast, 'name': f'{parent}$fn', 'expression': expression}, scope)
+        expression, _ = name_ast(ast['expression'], None, '.ret', inner_scope)
+        return ({**ast, 'name': name, 'expression': expression}, scope)
     elif ast['type'] == 'external':
-        return ({**ast, 'name': f'{parent}$external'}, scope)
+        return ({**ast, 'name': name}, scope)
     elif ast['type'] == 'call':
-        call, _ = name_ast(ast['call'], f'{parent}$call', scope)
+        call, _ = name_ast(ast['call'], None, f'{parent}.call', scope)
 
         args = []
         for i, arg in enumerate(ast['args']):
-            arg, _ = name_ast(arg, f'{parent}$call{i}', scope)
+            arg, _ = name_ast(arg, None, f'{parent}.call{i}', scope)
             args.append(arg)
 
-        return ({**ast, 'name': f'{parent}$res', 'call': call, 'args': args}, scope)
+        return ({**ast, 'name': name, 'call': call, 'args': args}, scope)
     elif ast['type'] == 'instruction':
         args = []
         for i, arg in enumerate(ast['args']):
-            arg, _ = name_ast(arg, f'{parent}$call{i}', scope)
+            arg, _ = name_ast(arg, None, f'{parent}.instruction{i}', scope)
             args.append(arg)
 
-        return ({**ast, 'name': f'{parent}$res', 'args': args}, scope)
+        return ({**ast, 'name': name, 'args': args}, scope)
     elif ast['type'] in ['block', 'tuple']:
         inner_scope = scope
         expressions = []
         for i, expression in enumerate(ast['expressions']):
-            expression, inner_scope = name_ast(expression, f'{parent}${i}', inner_scope)
+            if i == len(ast['expressions']) - 1:
+                expression_name = name
+            else:
+                expression_name = None
+
+            expression, inner_scope = name_ast(expression, None, f'{parent}.{i}', inner_scope)
             expressions.append(expression)
 
         return ({**ast, 'expressions': expressions}, scope)
 
 
 def namer(ast):
-    ast, _ = name_ast(ast, '', dict())
+    ast, _ = name_ast(ast, None, '.module', dict())
     return ast
 
 

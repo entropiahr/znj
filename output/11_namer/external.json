@@ -3,16 +3,16 @@
   "expressions": [
     {
       "type": "def",
-      "name": "$0.putchar",
+      "name": "putchar",
       "expression": {
         "type": "external",
         "external": "putchar",
-        "name": "$0.putchar$external"
+        "name": "putchar"
       }
     },
     {
       "type": "def",
-      "name": "$1.main",
+      "name": "main",
       "expression": {
         "type": "fn",
         "args": [],
@@ -20,17 +20,17 @@
           "type": "call",
           "call": {
             "type": "name",
-            "value": "$0.putchar"
+            "value": "putchar"
           },
           "args": [
             {
               "type": "integer",
-              "value": "41"
+              "value": "65"
             }
           ],
-          "name": "$res"
+          "name": ".ret"
         },
-        "name": "$1.main$fn"
+        "name": "main"
       }
     }
   ]

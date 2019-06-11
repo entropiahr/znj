@@ -1,32 +1,32 @@
 {
   "functions": [
     {
-      "name": "$0.putchar$external",
+      "name": "putchar",
       "external": true
     },
     {
-      "name": "$1.main$fn",
+      "name": "main",
       "external": false,
       "args": [],
       "body": [
         {
           "type": "call",
-          "name": "$res",
+          "name": ".ret",
           "call": {
             "type": "name",
-            "value": "$0.putchar$external"
+            "value": "putchar"
           },
           "args": [
             {
               "type": "integer",
-              "value": "41"
+              "value": "65"
             }
           ]
         }
       ],
       "return": {
         "type": "name",
-        "value": "$res"
+        "value": ".ret"
       }
     }
   ]

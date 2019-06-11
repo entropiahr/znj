@@ -1,18 +1,18 @@
 {
   "expression": {
     "type": "name",
-    "value": "$0.main$fn"
+    "value": "main"
   },
   "statements": [
     {
       "type": "fn",
       "args": [],
-      "name": "$0.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$1$res",
+          "name": ".ret.1",
           "args": [
             {
               "type": "integer",
@@ -27,7 +27,7 @@
       ],
       "return": {
         "type": "name",
-        "value": "$1$res"
+        "value": ".ret.1"
       }
     }
   ]

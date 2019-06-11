@@ -2,10 +2,10 @@
 target triple = "x86_64-unknown-linux-gnu"
 target datalayout = ""
 
-define i32 @"$0.main$fn"() 
+define i32 @"main"() 
 {
 entry:
-  %"$2.test$res" = add i32 1, 1
-  %"$3.test$res" = add i32 1, %"$2.test$res"
-  ret i32 %"$3.test$res"
+  %"test.1" = add i32 1, 1
+  %"test.2" = add i32 1, %"test.1"
+  ret i32 %"test.2"
 }

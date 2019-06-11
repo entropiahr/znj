@@ -1,17 +1,17 @@
 {
   "expression": {
     "type": "name",
-    "value": "$0.main"
+    "value": "main"
   },
   "statements": [
     {
       "type": "fn",
       "args": [],
-      "name": "$0.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "def",
-          "name": "$0.test",
+          "name": "test",
           "expression": {
             "type": "integer",
             "value": "1"
@@ -19,16 +19,16 @@
         },
         {
           "type": "def",
-          "name": "$1.test",
+          "name": "test.0",
           "expression": {
             "type": "name",
-            "value": "$0.test"
+            "value": "test"
           }
         },
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$2.test$res",
+          "name": "test.1",
           "args": [
             {
               "type": "integer",
@@ -36,22 +36,22 @@
             },
             {
               "type": "name",
-              "value": "$1.test"
+              "value": "test.0"
             }
           ]
         },
         {
           "type": "def",
-          "name": "$2.test",
+          "name": "test.1",
           "expression": {
             "type": "name",
-            "value": "$2.test$res"
+            "value": "test.1"
           }
         },
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$3.test$res",
+          "name": "test.2",
           "args": [
             {
               "type": "integer",
@@ -59,38 +59,38 @@
             },
             {
               "type": "name",
-              "value": "$2.test"
+              "value": "test.1"
             }
           ]
         },
         {
           "type": "def",
-          "name": "$3.test",
+          "name": "test.2",
           "expression": {
             "type": "name",
-            "value": "$3.test$res"
+            "value": "test.2"
           }
         },
         {
           "type": "def",
-          "name": "$4.test",
+          "name": "test.3",
           "expression": {
             "type": "name",
-            "value": "$3.test"
+            "value": "test.2"
           }
         }
       ],
       "return": {
         "type": "name",
-        "value": "$4.test"
+        "value": "test.3"
       }
     },
     {
       "type": "def",
-      "name": "$0.main",
+      "name": "main",
       "expression": {
         "type": "name",
-        "value": "$0.main$fn"
+        "value": "main"
       }
     }
   ]

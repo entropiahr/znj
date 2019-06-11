@@ -1,7 +1,7 @@
 {
   "functions": [
     {
-      "name": "$0.test$fn",
+      "name": "test",
       "external": false,
       "args": [
         "arg1",
@@ -14,16 +14,16 @@
       }
     },
     {
-      "name": "$1.main$fn",
+      "name": "main",
       "external": false,
       "args": [],
       "body": [
         {
           "type": "call",
-          "name": "$0.x$res",
+          "name": "x",
           "call": {
             "type": "name",
-            "value": "$0.test$fn"
+            "value": "test"
           },
           "args": [
             {
@@ -39,7 +39,7 @@
       ],
       "return": {
         "type": "name",
-        "value": "$0.x$res"
+        "value": "x"
       }
     }
   ]

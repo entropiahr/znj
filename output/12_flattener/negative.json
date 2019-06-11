@@ -1,17 +1,17 @@
 {
   "expression": {
     "type": "name",
-    "value": "$0.main"
+    "value": "main"
   },
   "statements": [
     {
       "type": "fn",
       "args": [],
-      "name": "$0.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "def",
-          "name": "$0.x",
+          "name": "x",
           "expression": {
             "type": "integer",
             "value": "-7"
@@ -20,7 +20,7 @@
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$1$res",
+          "name": ".ret.1",
           "args": [
             {
               "type": "integer",
@@ -28,22 +28,22 @@
             },
             {
               "type": "name",
-              "value": "$0.x"
+              "value": "x"
             }
           ]
         }
       ],
       "return": {
         "type": "name",
-        "value": "$1$res"
+        "value": ".ret.1"
       }
     },
     {
       "type": "def",
-      "name": "$0.main",
+      "name": "main",
       "expression": {
         "type": "name",
-        "value": "$0.main$fn"
+        "value": "main"
       }
     }
   ]

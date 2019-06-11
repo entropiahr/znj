@@ -1,37 +1,37 @@
 {
   "expression": {
     "type": "name",
-    "value": "$1.main$fn"
+    "value": "main"
   },
   "statements": [
     {
       "type": "external",
       "external": "putchar",
-      "name": "$0.putchar$external"
+      "name": "putchar"
     },
     {
       "type": "fn",
       "args": [],
-      "name": "$1.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "call",
-          "name": "$res",
+          "name": ".ret",
           "call": {
             "type": "name",
-            "value": "$0.putchar$external"
+            "value": "putchar"
           },
           "args": [
             {
               "type": "integer",
-              "value": "41"
+              "value": "65"
             }
           ]
         }
       ],
       "return": {
         "type": "name",
-        "value": "$res"
+        "value": ".ret"
       }
     }
   ]

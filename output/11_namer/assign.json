@@ -3,19 +3,19 @@
   "expressions": [
     {
       "type": "def",
-      "name": "$0.main",
+      "name": "main",
       "expression": {
         "type": "fn",
         "args": [],
         "expression": {
           "type": "def",
-          "name": ".test",
+          "name": "test",
           "expression": {
             "type": "integer",
             "value": "1"
           }
         },
-        "name": "$0.main$fn"
+        "name": "main"
       }
     }
   ]

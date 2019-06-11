@@ -3,7 +3,7 @@
   "expressions": [
     {
       "type": "def",
-      "name": "$0.main",
+      "name": "main",
       "expression": {
         "type": "fn",
         "args": [],
@@ -11,7 +11,7 @@
           "type": "integer",
           "value": "1"
         },
-        "name": "$0.main$fn"
+        "name": "main"
       }
     }
   ]

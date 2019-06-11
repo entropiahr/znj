@@ -1,17 +1,17 @@
 {
   "expression": {
     "type": "name",
-    "value": "$0.main"
+    "value": "main"
   },
   "statements": [
     {
       "type": "fn",
       "args": [],
-      "name": "$0.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "def",
-          "name": ".test",
+          "name": "test",
           "expression": {
             "type": "integer",
             "value": "1"
@@ -20,15 +20,15 @@
       ],
       "return": {
         "type": "name",
-        "value": ".test"
+        "value": "test"
       }
     },
     {
       "type": "def",
-      "name": "$0.main",
+      "name": "main",
       "expression": {
         "type": "name",
-        "value": "$0.main$fn"
+        "value": "main"
       }
     }
   ]

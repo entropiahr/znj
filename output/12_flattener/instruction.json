@@ -1,7 +1,7 @@
 {
   "expression": {
     "type": "name",
-    "value": "$2.main"
+    "value": "main"
   },
   "statements": [
     {
@@ -10,12 +10,12 @@
         "x",
         "y"
       ],
-      "name": "$0.add$fn",
+      "name": "add",
       "body": [
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$res",
+          "name": ".ret",
           "args": [
             {
               "type": "name",
@@ -30,15 +30,15 @@
       ],
       "return": {
         "type": "name",
-        "value": "$res"
+        "value": ".ret"
       }
     },
     {
       "type": "def",
-      "name": "$0.add",
+      "name": "add",
       "expression": {
         "type": "name",
-        "value": "$0.add$fn"
+        "value": "add"
       }
     },
     {
@@ -47,12 +47,12 @@
         "x",
         "y"
       ],
-      "name": "$1.sub$fn",
+      "name": "sub",
       "body": [
         {
           "type": "instruction",
           "instruction": "sub",
-          "name": "$res",
+          "name": ".ret",
           "args": [
             {
               "type": "name",
@@ -67,28 +67,28 @@
       ],
       "return": {
         "type": "name",
-        "value": "$res"
+        "value": ".ret"
       }
     },
     {
       "type": "def",
-      "name": "$1.sub",
+      "name": "sub",
       "expression": {
         "type": "name",
-        "value": "$1.sub$fn"
+        "value": "sub"
       }
     },
     {
       "type": "fn",
       "args": [],
-      "name": "$2.main$fn",
+      "name": "main",
       "body": [
         {
           "type": "call",
-          "name": "$0.x$call0$res",
+          "name": ".ret.0.call0",
           "call": {
             "type": "name",
-            "value": "$0.add"
+            "value": "add"
           },
           "args": [
             {
@@ -103,15 +103,15 @@
         },
         {
           "type": "call",
-          "name": "$0.x$res",
+          "name": "x",
           "call": {
             "type": "name",
-            "value": "$1.sub"
+            "value": "sub"
           },
           "args": [
             {
               "type": "name",
-              "value": "$0.x$call0$res"
+              "value": ".ret.0.call0"
             },
             {
               "type": "integer",
@@ -121,24 +121,24 @@
         },
         {
           "type": "def",
-          "name": "$0.x",
+          "name": "x",
           "expression": {
             "type": "name",
-            "value": "$0.x$res"
+            "value": "x"
           }
         }
       ],
       "return": {
         "type": "name",
-        "value": "$0.x"
+        "value": "x"
       }
     },
     {
       "type": "def",
-      "name": "$2.main",
+      "name": "main",
       "expression": {
         "type": "name",
-        "value": "$2.main$fn"
+        "value": "main"
       }
     }
   ]

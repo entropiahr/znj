@@ -1,14 +1,14 @@
 {
   "functions": [
     {
-      "name": "$0.main$fn",
+      "name": "main",
       "external": false,
       "args": [],
       "body": [
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$2.test$res",
+          "name": "test.1",
           "args": [
             {
               "type": "integer",
@@ -23,7 +23,7 @@
         {
           "type": "instruction",
           "instruction": "add",
-          "name": "$3.test$res",
+          "name": "test.2",
           "args": [
             {
               "type": "integer",
@@ -31,14 +31,14 @@
             },
             {
               "type": "name",
-              "value": "$2.test$res"
+              "value": "test.1"
             }
           ]
         }
       ],
       "return": {
         "type": "name",
-        "value": "$3.test$res"
+        "value": "test.2"
       }
     }
   ]
