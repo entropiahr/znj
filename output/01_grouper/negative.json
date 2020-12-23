@@ -6,12 +6,20 @@
       "type": "operator",
       "operator": "=",
       "lhs": {
-        "type": "name",
-        "value": "main"
+        "type": "operator",
+        "operator": ":",
+        "lhs": {
+          "type": "name",
+          "value": "Int"
+        },
+        "rhs": {
+          "type": "name",
+          "value": "main"
+        }
       },
       "rhs": {
         "type": "operator",
-        "operator": "->",
+        "operator": "=>",
         "lhs": {
           "type": "block",
           "seperator": null,
@@ -25,8 +33,16 @@
               "type": "operator",
               "operator": "=",
               "lhs": {
-                "type": "name",
-                "value": "x"
+                "type": "operator",
+                "operator": ":",
+                "lhs": {
+                  "type": "name",
+                  "value": "Int"
+                },
+                "rhs": {
+                  "type": "name",
+                  "value": "x"
+                }
               },
               "rhs": {
                 "type": "integer",

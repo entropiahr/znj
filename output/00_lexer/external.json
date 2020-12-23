@@ -1,6 +1,13 @@
 [
   {
     "type": "name",
+    "value": "Int"
+  },
+  {
+    "type": ":"
+  },
+  {
+    "type": "name",
     "value": "putchar"
   },
   {
@@ -18,6 +25,13 @@
   },
   {
     "type": "name",
+    "value": "Int"
+  },
+  {
+    "type": ":"
+  },
+  {
+    "type": "name",
     "value": "main"
   },
   {
@@ -30,7 +44,7 @@
     "type": ")"
   },
   {
-    "type": "->"
+    "type": "=>"
   },
   {
     "type": "name",

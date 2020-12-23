@@ -19,7 +19,11 @@ if [ "$1" == "clear" ]; then
   exit 0
 fi
 
-test_files=tests/*.znj
+if [ "$#" -ne 0 ]; then
+  test_files="${@:1}"
+else
+  test_files=tests/*.znj
+fi
 
 for test in $test_files; do
   basename=$(basename $test)

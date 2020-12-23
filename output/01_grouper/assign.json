@@ -6,28 +6,54 @@
       "type": "operator",
       "operator": "=",
       "lhs": {
-        "type": "name",
-        "value": "main"
+        "type": "operator",
+        "operator": ":",
+        "lhs": {
+          "type": "name",
+          "value": "Int"
+        },
+        "rhs": {
+          "type": "name",
+          "value": "main"
+        }
       },
       "rhs": {
         "type": "operator",
-        "operator": "->",
+        "operator": "=>",
         "lhs": {
           "type": "block",
           "seperator": null,
           "expressions": []
         },
         "rhs": {
-          "type": "operator",
-          "operator": "=",
-          "lhs": {
-            "type": "name",
-            "value": "test"
-          },
-          "rhs": {
-            "type": "integer",
-            "value": "1"
-          }
+          "type": "block",
+          "seperator": ";",
+          "expressions": [
+            {
+              "type": "operator",
+              "operator": "=",
+              "lhs": {
+                "type": "operator",
+                "operator": ":",
+                "lhs": {
+                  "type": "name",
+                  "value": "Int"
+                },
+                "rhs": {
+                  "type": "name",
+                  "value": "assign"
+                }
+              },
+              "rhs": {
+                "type": "integer",
+                "value": "1"
+              }
+            },
+            {
+              "type": "name",
+              "value": "assign"
+            }
+          ]
         }
       }
     }

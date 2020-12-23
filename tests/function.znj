@@ -1,6 +1,6 @@
-test = (arg1, arg2) -> arg1;
+Int : test = (arg1, arg2) => arg1;
 
-main = () -> (
-  x = test(1, 2);
+Int : main = () => (
+  Int : x = test(1, 2);
   x
 )

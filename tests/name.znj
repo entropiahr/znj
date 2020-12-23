@@ -1,8 +1,8 @@
-main = () -> (
-  test = 1;
-  test = test;
-  test = instruction add(1, test);
-  test = instruction add(1, test);
-  test = test;
+Int : main = () => (
+  Int : test = 1;
+  Int : test = test;
+  Int : test = instruction add(1, test);
+  Int : test = instruction add(1, test);
+  Int : test = test;
   test
 )

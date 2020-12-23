@@ -16,6 +16,16 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "function",
+        "args": [],
+        "result": {
+          "type": "type",
+          "ttype": "primitive",
+          "value": "Int"
+        }
+      },
       "name": "main",
       "expression": {
         "type": "name",

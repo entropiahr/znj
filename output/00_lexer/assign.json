@@ -1,6 +1,13 @@
 [
   {
     "type": "name",
+    "value": "Int"
+  },
+  {
+    "type": ":"
+  },
+  {
+    "type": "name",
     "value": "main"
   },
   {
@@ -13,11 +20,21 @@
     "type": ")"
   },
   {
-    "type": "->"
+    "type": "=>"
+  },
+  {
+    "type": "("
   },
   {
     "type": "name",
-    "value": "test"
+    "value": "Int"
+  },
+  {
+    "type": ":"
+  },
+  {
+    "type": "name",
+    "value": "assign"
   },
   {
     "type": "="
@@ -25,6 +42,16 @@
   {
     "type": "integer",
     "value": "1"
+  },
+  {
+    "type": ";"
+  },
+  {
+    "type": "name",
+    "value": "assign"
+  },
+  {
+    "type": ")"
   },
   {
     "type": "EOF"

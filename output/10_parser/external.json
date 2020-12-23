@@ -3,6 +3,11 @@
   "expressions": [
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "putchar",
       "expression": {
         "type": "external",
@@ -11,6 +16,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "fn",

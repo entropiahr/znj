@@ -3,6 +3,11 @@
   "expressions": [
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "fn",
@@ -12,6 +17,11 @@
           "expressions": [
             {
               "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
               "name": "test",
               "expression": {
                 "type": "integer",
@@ -20,6 +30,11 @@
             },
             {
               "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
               "name": "test",
               "expression": {
                 "type": "name",
@@ -28,6 +43,11 @@
             },
             {
               "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
               "name": "test",
               "expression": {
                 "type": "instruction",
@@ -46,6 +66,11 @@
             },
             {
               "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
               "name": "test",
               "expression": {
                 "type": "instruction",
@@ -64,6 +89,11 @@
             },
             {
               "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
               "name": "test",
               "expression": {
                 "type": "name",

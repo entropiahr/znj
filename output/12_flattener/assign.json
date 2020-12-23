@@ -11,7 +11,12 @@
       "body": [
         {
           "type": "def",
-          "name": "test",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
+          "name": "assign",
           "expression": {
             "type": "integer",
             "value": "1"
@@ -20,11 +25,16 @@
       ],
       "return": {
         "type": "name",
-        "value": "test"
+        "value": "assign"
       }
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "name",

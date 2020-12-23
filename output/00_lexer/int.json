@@ -1,5 +1,21 @@
 [
   {
+    "type": "("
+  },
+  {
+    "type": ")"
+  },
+  {
+    "type": "->"
+  },
+  {
+    "type": "name",
+    "value": "Int"
+  },
+  {
+    "type": ":"
+  },
+  {
     "type": "name",
     "value": "main"
   },
@@ -13,7 +29,7 @@
     "type": ")"
   },
   {
-    "type": "->"
+    "type": "=>"
   },
   {
     "type": "integer",

@@ -6,12 +6,29 @@
       "type": "operator",
       "operator": "=",
       "lhs": {
-        "type": "name",
-        "value": "main"
+        "type": "operator",
+        "operator": ":",
+        "lhs": {
+          "type": "operator",
+          "operator": "->",
+          "lhs": {
+            "type": "block",
+            "seperator": null,
+            "expressions": []
+          },
+          "rhs": {
+            "type": "name",
+            "value": "Int"
+          }
+        },
+        "rhs": {
+          "type": "name",
+          "value": "main"
+        }
       },
       "rhs": {
         "type": "operator",
-        "operator": "->",
+        "operator": "=>",
         "lhs": {
           "type": "block",
           "seperator": null,

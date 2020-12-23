@@ -4,10 +4,12 @@
 This module groups all blocks and operators.
 
 Rules:
-literal|name|keyword|call|block|operator -> ex
+literal|name|call|block|operator|instruction|external -> ex
 ex ex -> call
 ()|(ex, ex, ...)|(ex; ex; ...) -> block
 ex op ex -> operator
+instruction name (ex, ex, ...) -> instruction
+external name -> external
 
 AST:
 {"type": "integer", "value": number}
@@ -28,8 +30,10 @@ SEPERATORS = [';', ',']
 EXPRESSION_TERMINATORS = GROUP_TERMINATORS + SEPERATORS
 OPERATORS = {
     'call': 0,
-    '->': 1,
-    '=': 1,
+    '=>': 1,
+    '->': 2,
+    ':': 3,
+    '=': 4,
 }
 
 
@@ -42,12 +46,12 @@ def parse_operators(items, lhs, op, rhs):
         new_op, new_rhs, *new_items = items
 
         if op:
-            if OPERATORS[op] < OPERATORS[new_op]:
-                lhs = parse_operators([], lhs, op, rhs)
-                return parse_operators(new_items, lhs, new_op, new_rhs)
-            else:
+            if OPERATORS[op] > OPERATORS[new_op]:
                 rhs = parse_operators(new_items, rhs, new_op, new_rhs)
                 return parse_operators([], lhs, op, rhs)
+            else:
+                lhs = parse_operators([], lhs, op, rhs)
+                return parse_operators(new_items, lhs, new_op, new_rhs)
         else:
             return parse_operators(new_items, lhs, new_op, new_rhs)
     else:

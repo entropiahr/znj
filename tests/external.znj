@@ -1,3 +1,3 @@
-putchar = external putchar;
+Int : putchar = external putchar;
 
-main = () -> putchar(65)
+Int : main = () => putchar(65)

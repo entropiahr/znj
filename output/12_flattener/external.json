@@ -11,6 +11,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "putchar",
       "expression": {
         "type": "name",
@@ -44,6 +49,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "name",

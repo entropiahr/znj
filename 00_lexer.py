@@ -17,7 +17,7 @@ Tokens types:
 
 import re
 
-SYNTAX = ['=', '->', ';', ',', '(', ')', 'instruction', 'external']
+SYNTAX = ['=>', '->', ':', '=', ';', ',', '(', ')', 'instruction', 'external']
 
 
 def scan(regex, chars):

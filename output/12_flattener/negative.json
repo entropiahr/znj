@@ -11,6 +11,11 @@
       "body": [
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "x",
           "expression": {
             "type": "integer",
@@ -40,6 +45,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "name",

@@ -3,17 +3,36 @@
   "expressions": [
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "fn",
         "args": [],
         "expression": {
-          "type": "def",
-          "name": "test",
-          "expression": {
-            "type": "integer",
-            "value": "1"
-          }
+          "type": "block",
+          "expressions": [
+            {
+              "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
+              "name": "assign",
+              "expression": {
+                "type": "integer",
+                "value": "1"
+              }
+            },
+            {
+              "type": "name",
+              "value": "assign"
+            }
+          ]
         },
         "name": "main"
       }

@@ -1,4 +1,4 @@
-main = () -> (
-  x = -7;
+Int : main = () => (
+  Int : x = -7;
   instruction add(5, x)
 )

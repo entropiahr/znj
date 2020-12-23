@@ -3,6 +3,11 @@
   "expressions": [
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "add",
       "expression": {
         "type": "fn",
@@ -30,6 +35,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "sub",
       "expression": {
         "type": "fn",
@@ -57,6 +67,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "fn",
@@ -66,6 +81,11 @@
           "expressions": [
             {
               "type": "def",
+              "vtype": {
+                "type": "type",
+                "ttype": "primitive",
+                "value": "Int"
+              },
               "name": "x",
               "expression": {
                 "type": "call",

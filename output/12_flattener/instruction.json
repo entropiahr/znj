@@ -35,6 +35,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "add",
       "expression": {
         "type": "name",
@@ -72,6 +77,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "sub",
       "expression": {
         "type": "name",
@@ -121,6 +131,11 @@
         },
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "x",
           "expression": {
             "type": "name",
@@ -135,6 +150,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "name",

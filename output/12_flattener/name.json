@@ -11,6 +11,11 @@
       "body": [
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "test",
           "expression": {
             "type": "integer",
@@ -19,6 +24,11 @@
         },
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "test.0",
           "expression": {
             "type": "name",
@@ -42,6 +52,11 @@
         },
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "test.1",
           "expression": {
             "type": "name",
@@ -65,6 +80,11 @@
         },
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "test.2",
           "expression": {
             "type": "name",
@@ -73,6 +93,11 @@
         },
         {
           "type": "def",
+          "vtype": {
+            "type": "type",
+            "ttype": "primitive",
+            "value": "Int"
+          },
           "name": "test.3",
           "expression": {
             "type": "name",
@@ -87,6 +112,11 @@
     },
     {
       "type": "def",
+      "vtype": {
+        "type": "type",
+        "ttype": "primitive",
+        "value": "Int"
+      },
       "name": "main",
       "expression": {
         "type": "name",
